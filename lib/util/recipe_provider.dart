@@ -9,6 +9,21 @@ class Recipe {
   Recipe({required this.recipeName, required this.cookTime});
 }
 
+//CLASS FOR RECIPE CARD
+/*class RecipeCard extends StatelessWidget {
+  final String title;
+  final String rating;
+  final String cooktime;
+  final String thumbnailUrl;
+
+  RecipeCard({
+    required this.title,
+    required this.rating,
+    required this.cooktime,
+    required this.thumbnailUrl,
+  });
+*/
+
 class RecipeProvider extends ChangeNotifier {
   //list of recipe
   // ignore: prefer_final_fields
