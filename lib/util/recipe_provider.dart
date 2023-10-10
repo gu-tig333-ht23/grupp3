@@ -2,39 +2,56 @@
 
 import 'package:flutter/material.dart';
 
+//samma klass som i api men fipplar inte med den nu
 class Recipe {
-  String recipeName;
-  String cookTime;
-
-  Recipe({required this.recipeName, required this.cookTime});
-}
-
-//CLASS FOR RECIPE CARD
-/*class RecipeCard extends StatelessWidget {
+  final double? id;
   final String title;
-  final String rating;
-  final String cooktime;
-  final String thumbnailUrl;
+  final String image;
+  final int readyInMinutes;
+  //final List<String> dishtypes;
+  //final List expectedIngidients;
 
-  RecipeCard({
+  Recipe({
+    this.id,
     required this.title,
-    required this.rating,
-    required this.cooktime,
-    required this.thumbnailUrl,
+    required this.image,
+    required this.readyInMinutes,
+    //required this.dishtypes,
+    //required this.expectedIngidients,
   });
-*/
+}
 
 class RecipeProvider extends ChangeNotifier {
   //list of recipe
+  List<Recipe> _randomRecipeList = [];
+
   // ignore: prefer_final_fields
-  List<Recipe> _recipeList = [
-    Recipe(recipeName: 'Pasta carbonara', cookTime: '40 min'),
-    Recipe(recipeName: 'Korv Stroganoff', cookTime: '20 min')
+  List<Recipe> _myRecipeList = [
+    Recipe(
+        title: 'Pasta carbonara',
+        readyInMinutes: 40,
+        image: 'lib/images/avo_icon.png'),
+    Recipe(
+        title: 'Korv Stroganoff',
+        readyInMinutes: 20,
+        image: 'lib/images/meal.png')
   ];
 
-  //lägga till funktioner sen
+  //lägga till ett recept i _myRecipeList
+  String getImage(recipe) {
+    return recipe.image.toString();
+  }
 
-  List<Recipe> get recipeList {
-    return _recipeList;
+  void addToMyRecipes(recipe) {
+    _myRecipeList.add(recipe);
+    notifyListeners();
+  }
+
+  List<Recipe> get randomRecipeList {
+    return _randomRecipeList;
+  }
+
+  List<Recipe> get myRecipeList {
+    return _myRecipeList;
   }
 }

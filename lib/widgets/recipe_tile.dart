@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:mealmate/pages/view_recipe_page.dart';
 import '../util/recipe_provider.dart';
 
 class RecipeTile extends StatelessWidget {
@@ -23,13 +24,26 @@ class RecipeTile extends StatelessWidget {
               children: [
                 //name of recipe
                 Text(
-                  recipe.recipeName,
+                  recipe.title,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                //view recipe
+                Text(
+                  '${recipe.readyInMinutes} minutes',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+
+                //VIEW RECIPE
                 ElevatedButton.icon(
                   onPressed: () {
                     //view recipe page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ViewRecipePage(recipe: recipe);
+                        },
+                      ),
+                    );
                     print('view recipe clicked');
                   },
                   icon: Icon(Icons.menu_book),
@@ -39,6 +53,8 @@ class RecipeTile extends StatelessWidget {
                   ),
                   style: ButtonStyle(),
                 ),
+
+                //ADD RECIPE TO MEALPLAN
                 ElevatedButton.icon(
                   onPressed: () {
                     //pop up window??
@@ -55,7 +71,7 @@ class RecipeTile extends StatelessWidget {
             Column(
               children: [
                 Image.asset(
-                  'lib/images/meal.png',
+                  recipe.image,
                   width: 100,
                   height: 100,
                 )
