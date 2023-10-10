@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   appinio_swiper: ^2.0.3
   provider: any
+  http: any
   
 
 dev_dependencies:
