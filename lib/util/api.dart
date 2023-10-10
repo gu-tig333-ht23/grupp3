@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mealmate/util/recipe.dart';
+import '/util/recipe.dart';
 
 const String ENDPOINT = 'https://api.spoonacular.com/recipes/complexSearch';
 const String apiKey = 'f20028b02395416fbe1af1d72d9cb4ee';
