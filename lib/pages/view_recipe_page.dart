@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:mealmate/util/recipe.dart';
+import '/util/recipe.dart';
 
 class ViewRecipePage extends StatelessWidget {
   final Recipe recipe;
