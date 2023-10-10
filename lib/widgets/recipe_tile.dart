@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:mealmate/pages/view_recipe_page.dart';
-import '../util/recipe_provider.dart';
+import 'package:mealmate/util/recipe.dart';
+import 'package:mealmate/util/recipe_provider.dart';
+import 'package:provider/provider.dart';
 
 class RecipeTile extends StatelessWidget {
   final Recipe recipe;
@@ -82,6 +84,8 @@ class RecipeTile extends StatelessWidget {
                 IconButton(
                   onPressed: () {
                     //delete recipe from my saved recipes
+                    Provider.of<RecipeProvider>(context, listen: false)
+                        .removeFromMyRecipes(recipe);
                     print('delete clicked');
                   },
                   icon: Icon(

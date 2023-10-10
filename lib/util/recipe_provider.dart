@@ -1,32 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-
-//samma klass som i api men fipplar inte med den nu
-class Recipe {
-  final double? id;
-  final String title;
-  final String image;
-  final int readyInMinutes;
-  //final List<String> dishtypes;
-  //final List expectedIngidients;
-
-  Recipe({
-    this.id,
-    required this.title,
-    required this.image,
-    required this.readyInMinutes,
-    //required this.dishtypes,
-    //required this.expectedIngidients,
-  });
-}
+import 'package:mealmate/util/recipe.dart';
 
 class RecipeProvider extends ChangeNotifier {
   //list of recipe
-  List<Recipe> _randomRecipeList = [];
-
   // ignore: prefer_final_fields
-  List<Recipe> _myRecipeList = [
+  List<Recipe> _randomRecipeList = [
     Recipe(
         title: 'Pasta carbonara',
         readyInMinutes: 40,
@@ -37,13 +17,21 @@ class RecipeProvider extends ChangeNotifier {
         image: 'lib/images/meal.png')
   ];
 
+  // ignore: prefer_final_fields
+  List<Recipe> _myRecipeList = [];
+
   //lägga till ett recept i _myRecipeList
   String getImage(recipe) {
-    return recipe.image.toString();
+    return recipe.image;
   }
 
   void addToMyRecipes(recipe) {
     _myRecipeList.add(recipe);
+    notifyListeners();
+  }
+
+  void removeFromMyRecipes(recipe) {
+    _myRecipeList.remove(recipe);
     notifyListeners();
   }
 
