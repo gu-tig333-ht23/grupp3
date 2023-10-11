@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '/util/recipe_provider.dart';
 import '/pages/intro_page.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   RecipeProvider state = RecipeProvider();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
+        textTheme: GoogleFonts.montserratTextTheme(),
       ),
       home: IntroPage(),
     );

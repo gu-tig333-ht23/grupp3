@@ -38,6 +38,7 @@ dependencies:
   appinio_swiper: ^2.0.3
   provider: any
   http: any
+  google_fonts: ^6.1.0
   
 
 dev_dependencies:
