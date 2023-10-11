@@ -40,6 +40,7 @@ class MealPlannerPage extends StatelessWidget {
     );
   } //visa veckodagarna
 
+//flytta ut detta??
   Widget buildSubjects() {
     return ListView.builder(
         itemCount: 7,
