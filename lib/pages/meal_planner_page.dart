@@ -73,18 +73,15 @@ class MealPlannerPage extends StatelessWidget {
 // boxarna för alla dagar, bakgrunden
   Widget buildSubject(String dayOfWeek) {
     return Container(
-      //ändrade så att det inte blir dubbel padding mellan tiles /E
       padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
       decoration: BoxDecoration(
         border: Border.all(
-          //ändrade till brown, vad tycker vi? /E
-          color: Colors.brown,
+          color: Colors.brown.withOpacity(0.5),
         ),
         borderRadius: BorderRadius.circular(30),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            //ändrade till brown & minimerade skuggan, vad tycker vi? /E
             color: Colors.brown.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 3,
@@ -93,22 +90,48 @@ class MealPlannerPage extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           //veckodagen
-          Center(
-            child: Text(
-              dayOfWeek,
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.black,
-                //ända jag hittade inom textstyle för att fixa bakgrundsfärgen /E
-                //backgroundColor: Colors.deepOrange[200],
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child:
+                    //rektangeln under texten
+                    Container(
+                  height: 25,
+                  width: 250,
+                  decoration: BoxDecoration(
+                    color: Color(0xffD89465),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.brown.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: Offset(2, 3),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        bottomLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                        bottomRight: Radius.circular(40)),
+                  ),
+                ),
               ),
-            ),
+              Text(
+                dayOfWeek,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(height: 4), //minimerade för jämnhet /E
+          const SizedBox(height: 4),
           //bilden
           Center(
             child: Stack(
@@ -122,7 +145,6 @@ class MealPlannerPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
                         'lib/images/meal.png',
-                        //ändrade så att bilden är lite större /E
                         width: 200,
                         height: 100,
                         fit: BoxFit.fitHeight,
@@ -133,24 +155,24 @@ class MealPlannerPage extends StatelessWidget {
 
                 //tabort-ikonen
                 Positioned(
-                  //right & top kan tas bort om vi är nöjda med positionen av knappen /E
-                  //right: 0,
                   top: 6,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       color: Colors.white,
-                      width: 50, //den va väldigt stor innan /E
+                      width: 50,
                       height: 50,
                       child: Center(
                         child: IconButton(
                           icon: Icon(Icons.close),
                           color: Colors.black,
                           onPressed: () {
+                            print('X pressed');
                             //SEPARAT funktion förmodligen
                             //image/recipe is removed
                             //drop down menu appears
                             //choose new recipe
+                            //new recipe image is shown
                           },
                         ),
                       ),

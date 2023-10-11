@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import 'package:mealmate/pages/view_recipe_page.dart';
-import 'package:mealmate/util/recipe.dart';
-import 'package:mealmate/util/recipe_provider.dart';
+import '/pages/view_recipe_page.dart';
+import '/util/recipe.dart';
+import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
 class RecipeTile extends StatelessWidget {
@@ -17,14 +17,24 @@ class RecipeTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(18),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.brown)),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.brown.withOpacity(0.5)),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.brown.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(2, 3),
+            )
+          ],
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Column(
               children: [
-                //name of recipe
+                //RECIPE TITLE
                 Text(
                   recipe.title,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

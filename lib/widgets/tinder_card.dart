@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, prefer_const_constructors_in_immutables
 
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class TinderCard extends StatelessWidget {
 
   void _swipe(int index, AppinioSwiperDirection direction) {
     if (direction.name == 'right') {
-      //recipeProvider.addToMyRecipes();
+      //addToMyRecipes();
       //snackis('Recipe saved to My Recipes')
       print('you swiped right??');
     } else {
@@ -46,12 +46,13 @@ class TinderCard extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Colors.yellow[200],
+                      color: Colors
+                          .white, //måste va vit, annars ser man igenom korten
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
+                          color: Colors.brown.withOpacity(0.2),
+                          spreadRadius: 3,
+                          blurRadius: 5,
                           offset: Offset(0, 3),
                         ),
                       ],
@@ -71,28 +72,50 @@ class TinderCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                        //RECIPE TITLE
                         Positioned(
                           bottom: 100,
                           left: 50,
                           right: 50,
                           child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                               color: Colors.white,
+                              border: Border.all(
+                                  color: Colors.brown.withOpacity(0.5)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.brown.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(2, 3),
+                                ),
+                              ],
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  value.randomRecipeList[index].title,
-                                  style: TextStyle(
-                                    fontSize: 24,
+                              padding: const EdgeInsets.all(6.0),
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      value.randomRecipeList[index].title,
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Center(
+                                    child: Text(
+                                      '${value.randomRecipeList[index].readyInMinutes.toString()} minutes',
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
+
+                        //ICON DELETE
                         Positioned(
                           left: 20,
                           bottom: 5,
@@ -101,9 +124,11 @@ class TinderCard extends StatelessWidget {
                                 Icon(Icons.close, size: 60, color: Colors.red),
                             onPressed: () {
                               print("X icon pressed");
+                              //push away card somehow???
                             },
                           ),
                         ),
+                        //ICON ADD
                         Positioned(
                           right: 20,
                           bottom: 5,
@@ -111,9 +136,12 @@ class TinderCard extends StatelessWidget {
                             icon: Icon(Icons.favorite_border_rounded,
                                 size: 60, color: Colors.green),
                             onPressed: () {
+                              //if(recipe does NOT exists in myRecipies){
                               rp.addToMyRecipes(value.randomRecipeList[index]);
+                              //} else {snackis('this recipie is already saved')}
                               //snackis('Recipe saved to My Recipes')
                               print("Heart icon pressed");
+                              //push away card somehow??
                             },
                           ),
                         ),
@@ -124,9 +152,7 @@ class TinderCard extends StatelessWidget {
               ),
             );
           } else {
-            return Container(
-              child: Text('empty'),
-            );
+            return Text('empty');
           }
         },
         cardsCount: value.randomRecipeList.length,
