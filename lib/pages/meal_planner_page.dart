@@ -113,11 +113,7 @@ class MealPlannerPage extends StatelessWidget {
                         offset: Offset(2, 3),
                       ),
                     ],
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        bottomLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
-                        bottomRight: Radius.circular(40)),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                 ),
               ),
