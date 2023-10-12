@@ -44,7 +44,7 @@ class ViewRecipePage extends StatelessWidget {
               ),
               Text(
                 recipe.title,
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${recipe.readyInMinutes} minutes',
@@ -57,7 +57,11 @@ class ViewRecipePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('INGREDIENTS', style: TextStyle(fontSize: 16)),
+                Text('INGREDIENTS',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    )),
                 Text('data'),
               ],
             ),
@@ -67,7 +71,11 @@ class ViewRecipePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('INSTRUCTIONS', style: TextStyle(fontSize: 16)),
+                Text('INSTRUCTIONS',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    )),
                 Text('data'),
               ],
             ),

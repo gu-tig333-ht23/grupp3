@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:mealmate/widgets/tinder_card.dart';
+import 'package:provider/provider.dart';
+import '../util/recipe_provider.dart';
+import '../widgets/empty_cards.dart';
 import '../widgets/nav_drawer.dart';
 
 //ÄR NOG ANVÄNDBART FÖR ATT VISA DET VI HÄMTAT FRÅN API, LADD SKÄRM
@@ -51,20 +54,21 @@ class HomePage extends StatelessWidget {
       ),
       //navigation drawer
       drawer: NavDrawer(context: context),
-      body: TinderCard(),
+      body: TinderOrEmptyWidget(),
     );
   }
+}
 
-  void snackis(context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.brown,
-        content: Text(
-          'yay! you swiped right!',
-          style: const TextStyle(fontSize: 16),
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+// Decides which body to be returned
+class TinderOrEmptyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var rp = Provider.of<RecipeProvider>(context);
+
+    if (rp.cardsAre == false) {
+      return TinderCard();
+    } else {
+      return EmptyCards();
+    }
   }
 }
