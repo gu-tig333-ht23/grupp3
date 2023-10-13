@@ -103,20 +103,8 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-//Dictionary för veckdodagar:
-  final Map<String, int> _weekDays = {
-    'Monday': 0,
-    'Tuesday': 1,
-    'Wednesday': 2,
-    'Thursday': 3,
-    'Friday': 4,
-    'Saturday': 5,
-    'Sunday': 6,
-  };
-//get/access dictionary
-  Map<String, int> get weekDays => _weekDays;
-
-  void saveRecipeToMP(int chosenDay, Recipe chosenRecipe) {
+//do shit
+  void saveRecipeToMP(String chosenDay, Recipe chosenRecipe) {
     //bara för print, tar bort senare :)
     String mealPlannerRecipe = chosenRecipe.title.toString();
 
@@ -126,20 +114,20 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Map<int, List<Recipe>> _plannerData = {
-    0: [], //Monday
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
+  final Map<String, Recipe?> _plannerData = {
+    'Monday': null, //Monday
+    'Tuesday': null,
+    'Wednesday': null,
+    'Thursday': null,
+    'Friday': null,
+    'Saturday': null,
+    'Sunday': null,
   };
 
-  Map<int, List<Recipe>> get plannerData => _plannerData;
+  Map<String, Recipe?> get plannerData => _plannerData;
 
-  addPlannerItem(int day, Recipe item) {
-    plannerData[day]?.add(item);
+  addPlannerItem(String day, Recipe item) {
+    plannerData[day] = item;
     print(plannerData);
     notifyListeners();
   }

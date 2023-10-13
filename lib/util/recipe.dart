@@ -34,8 +34,8 @@ class Recipe {
     }).toList();
   }
 
-  @override
+  /*@override
   String toString() {
     return 'Recipe {title: $title, image: $image, readyinMinutes: $readyInMinutes}';
-  }
+  }*/
 }
