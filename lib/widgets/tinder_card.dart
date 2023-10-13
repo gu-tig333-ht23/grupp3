@@ -140,6 +140,7 @@ class TinderCard extends StatelessWidget {
                                     size: 60, color: Colors.red),
                                 onPressed: () {
                                   swipecontroller.swipeLeft();
+                                  print('<3 pressed');
                                 },
                               ),
                               IconButton(
@@ -147,6 +148,7 @@ class TinderCard extends StatelessWidget {
                                     size: 60, color: Colors.green),
                                 onPressed: () {
                                   swipecontroller.swipe();
+                                  print('X pressed');
                                 },
                               ),
                             ],

@@ -131,4 +131,10 @@ class RecipeProvider extends ChangeNotifier {
     print(plannerData);
     notifyListeners();
   }
+
+  removePlannerItem(String day, Recipe item) {
+    plannerData[day] = null;
+    print(plannerData);
+    notifyListeners();
+  }
 }

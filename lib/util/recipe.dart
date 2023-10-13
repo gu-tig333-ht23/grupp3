@@ -33,9 +33,4 @@ class Recipe {
       return Recipe.fromJson(data);
     }).toList();
   }
-
-  /*@override
-  String toString() {
-    return 'Recipe {title: $title, image: $image, readyinMinutes: $readyInMinutes}';
-  }*/
 }
