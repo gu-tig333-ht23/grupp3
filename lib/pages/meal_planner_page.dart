@@ -66,7 +66,7 @@ class MealPlannerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isRecipeChosen = false;
+    bool isRecipeChosen = true;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
@@ -137,45 +137,7 @@ class MealPlannerTile extends StatelessWidget {
 Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek) {
   return isRecipeChosen
       //om recept finns??
-      ? Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  //visa recept info
-                },
-                child: Container(
-                  width: 270,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.brown,
-                    image: DecorationImage(
-                      image: AssetImage('lib/images/stockfood.png'),
-                      fit: BoxFit.cover,
-                      alignment: Alignment(0, -0.5),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Recipe title',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    //child: Text(rp.myRecipeList[index].toString()),
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  //clear recipe shown in mealplanner
-                },
-                icon: Icon(Icons.close),
-              ),
-            ],
-          ),
-        )
+      ? RecipieChosenMP()
       //OM RECEPT EJ FINNS
       : Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -193,4 +155,53 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek) {
             ),
           ],
         );
+}
+
+class RecipieChosenMP extends StatelessWidget {
+  const RecipieChosenMP({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //final pp = Provider.of<RecipeProvider>(context, listen: false);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              //visa recept info
+            },
+            child: Container(
+              width: 270,
+              height: 130,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.brown,
+                image: DecorationImage(
+                  image: AssetImage('lib/images/stockfood.png'),
+                  fit: BoxFit.cover,
+                  alignment: Alignment(0, -0.5),
+                  opacity: 0.1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Recept namn kommer snart!'
+                    //style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                //child: Text(rp.myRecipeList[index].toString()),
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              //clear recipe shown in mealplanner
+            },
+            icon: Icon(Icons.close),
+          ),
+        ],
+      ),
+    );
+  }
 }
