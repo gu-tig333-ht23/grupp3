@@ -75,15 +75,8 @@ class RecipeProvider extends ChangeNotifier {
     return _myRecipeList;
   }
 
+  //för att titlar på de 7 korten ska finnas i MP
   String selectedDay = '';
-  late Recipe mealPlannerRecipe;
-
-  saveRecipeToMP(String chosenDay, chosenRecipe) {
-    //här behöver vi nog göra ngt för att kunna visa valda receptet på vald dag??
-    print(chosenDay);
-    notifyListeners();
-  }
-
   final List<String> _daysOfWeek = [
     'Monday',
     'Tuesday',
@@ -93,7 +86,7 @@ class RecipeProvider extends ChangeNotifier {
     'Saturday',
     'Sunday',
   ];
-
+  List<String> get daysOfWeek => _daysOfWeek;
   String selectTheDay(String weekday) {
     selectedDay = weekday;
     print('day is now $selectedDay');
@@ -101,13 +94,53 @@ class RecipeProvider extends ChangeNotifier {
     return selectedDay;
   }
 
-  List<String> get daysOfWeek => _daysOfWeek;
-
+//no more tinder for you
   bool _cardsAre = false;
   get cardsAre => _cardsAre;
 
   cardsAreEmpty(bool isEmpty) {
     _cardsAre = isEmpty;
+    notifyListeners();
+  }
+
+//Dictionary för veckdodagar:
+  final Map<String, int> _weekDays = {
+    'Monday': 0,
+    'Tuesday': 1,
+    'Wednesday': 2,
+    'Thursday': 3,
+    'Friday': 4,
+    'Saturday': 5,
+    'Sunday': 6,
+  };
+//get/access dictionary
+  Map<String, int> get weekDays => _weekDays;
+
+  void saveRecipeToMP(int chosenDay, Recipe chosenRecipe) {
+    //bara för print, tar bort senare :)
+    String mealPlannerRecipe = chosenRecipe.title.toString();
+
+    _plannerData[addPlannerItem(chosenDay, chosenRecipe)];
+
+    print('$mealPlannerRecipe is chosen for $selectedDay');
+    notifyListeners();
+  }
+
+  final Map<int, List<Recipe>> _plannerData = {
+    0: [], //Monday
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+  };
+
+  Map<int, List<Recipe>> get plannerData => _plannerData;
+
+  addPlannerItem(int day, Recipe item) {
+    plannerData[day]?.add(item);
+    print(plannerData);
     notifyListeners();
   }
 }
