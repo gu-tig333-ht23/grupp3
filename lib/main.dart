@@ -42,7 +42,4 @@ home_page
 my_recipes_page
 - search bar?
 - filter?
-meal_planner_page
-- bilden ska uppdateras när ett recept är inlagt
-
  */

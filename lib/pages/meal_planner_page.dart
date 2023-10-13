@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-//import '../util/planner.dart';
 import '../util/recipe.dart';
 import '../util/recipe_provider.dart';
+import 'my_recipes_page.dart';
+import 'view_recipe_page.dart';
 
 //the page, bara appbar & scaffold
 class MealPlannerPage extends StatelessWidget {
@@ -144,7 +145,7 @@ class MealPlannerTile extends StatelessWidget {
 
             const SizedBox(height: 3),
 
-            showRecipeOrNot(isRecipeChosen, dayOfWeek),
+            showRecipeOrNot(isRecipeChosen, dayOfWeek, recipe, context),
           ],
         ),
       ),
@@ -152,10 +153,14 @@ class MealPlannerTile extends StatelessWidget {
   }
 }
 
-Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek) {
+Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
+    BuildContext context) {
   return isRecipeChosen
       //om recept finns??
-      ? RecipieChosenMP()
+      ? RecipieChosenMP(
+          recipe: recipe,
+          dayOfWeek: dayOfWeek,
+        )
       //OM RECEPT EJ FINNS
       : Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -167,7 +172,8 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek) {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                //navigate to My recipes
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => MyRecipesPage()));
               },
               child: Text('Add recipe'),
             ),
@@ -176,53 +182,66 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek) {
 }
 
 class RecipieChosenMP extends StatelessWidget {
-  const RecipieChosenMP({super.key});
+  final String dayOfWeek;
+  final Recipe? recipe;
+  const RecipieChosenMP(
+      {super.key, required this.recipe, required this.dayOfWeek});
 
   @override
   Widget build(BuildContext context) {
-    //final pp = Provider.of<RecipeProvider>(context, listen: false);
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              //visa recept info
-            },
-            child: Container(
-              width: 270,
-              height: 130,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.brown,
-                image: DecorationImage(
-                  image: AssetImage('lib/images/stockfood.png'),
-                  fit: BoxFit.cover,
-                  alignment: Alignment(0, -0.5),
-                  opacity: 0.1,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Center(
+              child: GestureDetector(
+                child: Container(
+                  width: MediaQuery.of(context).size.height * 0.3,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.brown,
+                    image: DecorationImage(
+                      image: AssetImage(recipe!.image.toString()),
+                      fit: BoxFit.cover,
+                      opacity: 0.6,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      recipe!.title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      backgroundColor: Colors.white),
-                ),
-                //child: Text(rp.myRecipeList[index].toString()),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ViewRecipePage(recipe: recipe!);
+                      },
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              //clear recipe shown in mealplanner
-            },
-            icon: Icon(Icons.close),
-          ),
-        ],
-      ),
+          ],
+        ),
+        IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Provider.of<RecipeProvider>(context, listen: false)
+                .removePlannerItem(dayOfWeek, recipe!);
+          },
+        ),
+      ],
     );
   }
 }
