@@ -12,8 +12,8 @@ class RecipeTile extends StatelessWidget {
 
   void _showPopup(BuildContext context) {
     final pp = Provider.of<RecipeProvider>(context, listen: false);
-    String selectedDay = pp.weekDays.keys.first;
-    int chosenDay = pp.weekDays.values.first;
+    String selectedDay = pp.plannerData.keys.first;
+    //int chosenDay = pp.weekDays.values.first;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -30,7 +30,7 @@ class RecipeTile extends StatelessWidget {
                     child: Consumer<RecipeProvider>(
                       builder: (context, value, child) => DropdownButton(
                         value: selectedDay,
-                        items: value.weekDays.keys.map((String day) {
+                        items: value.plannerData.keys.map((String day) {
                           return DropdownMenuItem(
                             value: day,
                             child: Text(day),
@@ -40,7 +40,7 @@ class RecipeTile extends StatelessWidget {
                           if (newValue != null) {
                             setState(() {
                               selectedDay = newValue;
-                              chosenDay = value.weekDays[selectedDay] ?? 0;
+                              //chosenDay = value.weekDays[selectedDay] ?? 0;
                             });
                           }
                         },
@@ -57,8 +57,8 @@ class RecipeTile extends StatelessWidget {
                           onPressed: () {
                             print(
                                 '$recipe is going to be saved to $selectedDay');
-                            print(chosenDay);
-                            pp.saveRecipeToMP(chosenDay, recipe);
+                            //print(chosenDay);
+                            pp.saveRecipeToMP(selectedDay, recipe);
                             Navigator.of(context).pop();
                           },
                           child: Text('Save',

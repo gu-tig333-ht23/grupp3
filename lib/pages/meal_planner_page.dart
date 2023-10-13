@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+//import '../util/planner.dart';
+import '../util/recipe.dart';
 import '../util/recipe_provider.dart';
 
 //the page, bara appbar & scaffold
@@ -48,12 +50,22 @@ class ViewMealPlannerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RecipeProvider>(
         builder: (context, value, child) => ListView.builder(
-            itemCount: value.daysOfWeek.length,
+            itemCount: value.plannerData.length,
             itemBuilder: (context, index) {
-              return MealPlannerTile(
-                dayOfWeek: value.daysOfWeek[index],
-                //recipe: value.myRecipeList[index - 1],
-              );
+              final dayOfWeek = value.plannerData.keys.elementAt(index);
+              final recipe = value.plannerData[dayOfWeek];
+
+              return recipe != null
+                  ? MealPlannerTile(
+                      dayOfWeek: dayOfWeek,
+                      recipe: recipe,
+                      isRecipeChosen: true,
+                    )
+                  : MealPlannerTile(
+                      dayOfWeek: dayOfWeek,
+                      recipe: recipe,
+                      isRecipeChosen: false,
+                    );
             }));
   }
 }
@@ -61,13 +73,19 @@ class ViewMealPlannerTile extends StatelessWidget {
 //hur veckodag-tile ser ut. får inte riktigt den att justera vilket recept den visas
 //tror detta behöver göras i en funktion i provider??
 class MealPlannerTile extends StatelessWidget {
-  var dayOfWeek;
-  MealPlannerTile({super.key, required this.dayOfWeek});
+  String dayOfWeek;
+  Recipe? recipe;
+  bool isRecipeChosen;
+
+  MealPlannerTile({
+    super.key,
+    required this.dayOfWeek,
+    required this.recipe,
+    required this.isRecipeChosen,
+  });
 
   @override
   Widget build(BuildContext context) {
-    bool isRecipeChosen = true;
-
     return Padding(
       padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
       child: Container(
@@ -187,9 +205,12 @@ class RecipieChosenMP extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Recept namn kommer snart!'
-                    //style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                child: Text(
+                  '',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      backgroundColor: Colors.white),
+                ),
                 //child: Text(rp.myRecipeList[index].toString()),
               ),
             ),
