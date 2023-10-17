@@ -41,10 +41,10 @@ class ViewMyRecipes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RecipeProvider>(
       builder: (context, value, child) => ListView.builder(
-        itemCount: value.recipeList.length,
+        itemCount: value.myRecipeList.length,
         itemBuilder: (context, index) {
           return RecipeTile(
-            recipe: value.recipeList[index],
+            recipe: value.myRecipeList[index],
           );
         },
       ),
