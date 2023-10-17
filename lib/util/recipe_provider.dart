@@ -1,53 +1,25 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import '/util/api.dart';
 import '/util/recipe.dart';
 
 class RecipeProvider extends ChangeNotifier {
-  //list of recipe
-  // ignore: prefer_final_fields
-  List<Recipe> _randomRecipeList = [
-    Recipe(
-      title: 'Pasta carbonara',
-      readyInMinutes: 40,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Korv Stroganoff',
-      readyInMinutes: 20,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Tacos',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Ceasar Sallad',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Pasta bolognaise',
-      readyInMinutes: 30,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Dillfisk',
-      readyInMinutes: 20,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Lasagne',
-      readyInMinutes: 45,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Zuccinipasta',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-  ];
+  // API
+  // Fetch recipe from API
+  void fetchRandomRecipes() async {
+    List<Recipe> recipes = await RecipeApi.getRandomRecipes();
+    _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
+    notifyListeners();
+  }
+
+  void fetchIngredients() async {
+    var dataIng = await RecipeApi.getIngredients();
+    print(dataIng);
+    notifyListeners();
+  }
+
+  List<Recipe> _randomRecipeList = [];
 
   // ignore: prefer_final_fields
   List<Recipe> _myRecipeList = [];
@@ -103,14 +75,15 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  refreshCards(bool isEmpty) {
+    _randomRecipeList.clear();
+    _cardsAre = !_cardsAre;
+    notifyListeners();
+  }
+
 //do shit
   void saveRecipeToMP(String chosenDay, Recipe chosenRecipe) {
-    //bara för print, tar bort senare :)
-    String mealPlannerRecipe = chosenRecipe.title.toString();
-
     _plannerData[addPlannerItem(chosenDay, chosenRecipe)];
-
-    print('$mealPlannerRecipe is chosen for $selectedDay');
     notifyListeners();
   }
 

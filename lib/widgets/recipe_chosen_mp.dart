@@ -15,49 +15,47 @@ class RecipeChosenMP extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Center(
-              child: GestureDetector(
-                child: Container(
-                  width: MediaQuery.of(context).size.height * 0.3,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.brown,
-                    image: DecorationImage(
-                      image: AssetImage(recipe!.image.toString()),
-                      fit: BoxFit.cover,
-                      opacity: 0.6,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      recipe!.title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ViewRecipePage(recipe: recipe!);
-                      },
-                    ),
-                  );
-                },
+        SizedBox(
+          width: 24,
+          height: 24,
+        ),
+        GestureDetector(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: 130,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.brown,
+              image: DecorationImage(
+                image: NetworkImage(recipe!.image.toString()),
+                fit: BoxFit.cover,
+                opacity: 0.6,
               ),
             ),
-          ],
+            child: Center(
+              child: Text(
+                recipe!.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ViewRecipePage(recipe: recipe!);
+                },
+              ),
+            );
+          },
         ),
         IconButton(
           icon: Icon(Icons.close),

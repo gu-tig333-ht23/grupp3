@@ -13,7 +13,7 @@ class ViewRecipePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
         title: Text(
-          recipe.title,
+          'Recipe Info',
           style: TextStyle(
             fontSize: 30,
           ),
@@ -36,7 +36,7 @@ class ViewRecipePage extends StatelessWidget {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Image.asset(
+                  child: Image.network(
                     recipe.image,
                     fit: BoxFit.fitWidth,
                   ),
@@ -46,10 +46,10 @@ class ViewRecipePage extends StatelessWidget {
                 recipe.title,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              Text(
-                '${recipe.readyInMinutes} minutes',
-                style: TextStyle(fontSize: 16),
-              ),
+              // Text(
+              //   '${recipe.readyInMinutes} minutes',
+              //   style: TextStyle(fontSize: 16),
+              // ),
             ],
           ),
           Padding(
