@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealmate/pages/home_page.dart';
 import 'package:mealmate/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -31,8 +32,13 @@ class EmptyCards extends StatelessWidget {
                     height: 16), // Add spacing between text and button
                 IconButton(
                   icon: const Icon(Icons.refresh), iconSize: 60,
-                  color: Colors.blue, // You can customize the icon
+                  color: Colors.green, // You can customize the icon
                   onPressed: () {
+                    Provider.of<RecipeProvider>(context, listen: false)
+                        .fetchRandomRecipes();
+                    Provider.of<RecipeProvider>(context, listen: false)
+                        .refreshCards(false);
+                    TinderOrEmptyWidget();
                     // Add your refresh functionality here
                   },
                 ),

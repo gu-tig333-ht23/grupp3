@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +6,8 @@ import 'package:mealmate/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
 class TinderCard extends StatelessWidget {
-  TinderCard({super.key});
-
-  final AppinioSwiperController swipecontroller = AppinioSwiperController();
+  final AppinioSwiperController swipecontroller;
+  TinderCard({required this.swipecontroller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +75,9 @@ class TinderCard extends StatelessWidget {
                               topLeft: Radius.circular(12),
                               topRight: Radius.circular(12),
                             ),
+                            color: Color.fromRGBO(204, 229, 134, 1.000),
                             image: DecorationImage(
-                              image: AssetImage(
+                              image: NetworkImage(
                                   value.randomRecipeList[index].image),
                               fit: BoxFit.cover,
                               alignment: Alignment(0, -0.5),
@@ -112,16 +112,17 @@ class TinderCard extends StatelessWidget {
                                 Center(
                                   child: Text(
                                     value.randomRecipeList[index].title,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 24,
                                     ),
                                   ),
                                 ),
-                                Center(
-                                  child: Text(
-                                    '${value.randomRecipeList[index].readyInMinutes.toString()} minutes',
-                                  ),
-                                ),
+                                // Center(
+                                //   child: Text(
+                                //     '${value.randomRecipeList[index].readyInMinutes.toString()} minutes',
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -140,15 +141,15 @@ class TinderCard extends StatelessWidget {
                                     size: 60, color: Colors.red),
                                 onPressed: () {
                                   swipecontroller.swipeLeft();
-                                  print('<3 pressed');
+                                  print('X pressed');
                                 },
                               ),
                               IconButton(
                                 icon: Icon(Icons.favorite_border_rounded,
                                     size: 60, color: Colors.green),
                                 onPressed: () {
-                                  swipecontroller.swipe();
-                                  print('X pressed');
+                                  swipecontroller.swipeRight();
+                                  print('<3 pressed');
                                 },
                               ),
                             ],
@@ -185,16 +186,4 @@ class TinderCard extends StatelessWidget {
           'You swiped: ${direction.name} and ${value.randomRecipeList[index].title} was removed');
     }
   }
-
-  //fungerar ej???
-  // refreshCards() {
-  //   return ElevatedButton(
-  //       onPressed: () {
-  //         //refresh page
-  //       },
-  //       child: Icon(
-  //         Icons.refresh,
-  //         color: Colors.green,
-  //       ));
-  // }
 }

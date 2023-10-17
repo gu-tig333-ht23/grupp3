@@ -100,7 +100,7 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
               'You have not chosen a recipe for $dayOfWeek',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).pushReplacement(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   RecipeProvider state = RecipeProvider();
+  state.fetchRandomRecipes();
   runApp(
     ChangeNotifierProvider(
       create: (context) => state,
