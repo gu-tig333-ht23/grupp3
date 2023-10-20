@@ -15,6 +15,7 @@ class _IntroPageState extends State<IntroPage> {
     _navigateToHomePageAfterDelay();
   }
 
+  //automatic navigation to HomePage after 3 seconds
   _navigateToHomePageAfterDelay() async {
     await Future.delayed(const Duration(seconds: 3));
     Navigator.of(context)
@@ -27,16 +28,11 @@ class _IntroPageState extends State<IntroPage> {
       backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SizedBox(height: 300),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Image.asset(
-              'lib/images/bigger_logo.png',
-            ),
+        child: Center(
+          child: Image.asset(
+            'lib/images/bigger_logo.png',
           ),
-          //const SizedBox(height: 50),
-        ]),
+        ),
       ),
     );
   }

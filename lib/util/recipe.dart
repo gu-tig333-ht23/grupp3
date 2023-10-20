@@ -1,36 +1,27 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-//flytta klassen sen typ?? dublett just nu bara för att leka runt med providern
-
 class Recipe {
-  final double? id;
-  final String title;
-  final String image;
-  final int readyInMinutes;
-  //final List<String> dishtypes;
-  //final List expectedIngidients;
+  final id;
+  final title;
+  final image;
 
   Recipe({
     this.id,
     required this.title,
     required this.image,
-    required this.readyInMinutes,
-    //required this.dishtypes,
-    //required this.expectedIngidients,
   });
 
-  factory Recipe.fromJson(dynamic json) {
-    return Recipe(
-      id: json['id'] as double,
-      title: json['title'] as String,
-      image: json['image'] as String,
-      readyInMinutes: json['readyInMinutes'] as int,
-      //dishtypes: (json['dishtypes'] as List <dynamic>).cast()<String>(),
-    );
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'image': image,
+    };
   }
 
-  static List<Recipe> recipesFromSnapshot(List snapshot) {
-    return snapshot.map((data) {
-      return Recipe.fromJson(data);
-    }).toList();
+  factory Recipe.fromMap(Map<String, dynamic> data) {
+    return Recipe(
+      id: data['id'],
+      title: data['title'],
+      image: data['image'],
+    );
   }
 }

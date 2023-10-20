@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import '/pages/view_recipe_page.dart';
@@ -89,7 +89,7 @@ class RecipeTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 12, top: 12, right: 12),
       child: Container(
-        padding: EdgeInsets.all(18),
+        padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(color: Colors.brown.withOpacity(0.5)),
@@ -106,81 +106,94 @@ class RecipeTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Column(
-              children: [
-                //RECIPE TITLE
-                Text(
-                  recipe.title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${recipe.readyInMinutes} minutes',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
+            Flexible(
+              child: Column(
+                children: [
+                  //RECIPE TITLE
+                  Text(
+                    recipe.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
 
-                //VIEW RECIPE
-                ElevatedButton(
-                  onPressed: () {
-                    //view recipe page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ViewRecipePage(recipe: recipe);
-                        },
+                  //VIEW RECIPE
+                  Consumer<RecipeProvider>(
+                    builder: (context, value, child) => ElevatedButton(
+                      onPressed: () async {
+                        //add function to get recpieinfo
+                        context.read<RecipeProvider>().chooseRecipeID(recipe);
+                        await context
+                            .read<RecipeProvider>()
+                            .fetchIngredientsFromApi();
+                        //view recipe page
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ViewRecipePage(recipe: recipe);
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'View recipe',
+                        style: TextStyle(fontSize: 12, color: Colors.black),
                       ),
-                    );
-                    print('view recipe clicked');
-                  },
-                  child: Text(
-                    'View recipe',
-                    style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
                   ),
-                ),
-
-                //ADD RECIPE TO MEALPLAN
-                ElevatedButton.icon(
-                  onPressed: () {
-                    _showPopup(context);
-
-                    //pop up window??
-                    print('add to mealplan clicked');
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text(
-                    'Add to mealplan',
-                    style: TextStyle(fontSize: 12, color: Colors.black),
+                  SizedBox(height: 4),
+                  //ADD RECIPE TO MEALPLAN
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      _showPopup(context);
+                    },
+                    icon: Icon(Icons.add),
+                    label: Text(
+                      'Add to mealplan',
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Column(
-              children: [
-                Image.asset(
-                  recipe.image,
-                  width: 100,
-                  height: 100,
-                )
-              ],
-            ),
-            Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    //delete recipe from my saved recipes
-                    Provider.of<RecipeProvider>(context, listen: false)
-                        .removeFromMyRecipes(recipe);
-                    print('delete clicked');
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.black,
+            //REMOVE BUTTON PLACED ON TOP OF IMAGE
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    //IMAGE
+                    width: 150,
+                    height: 140,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.brown,
+                        image: DecorationImage(
+                            image: NetworkImage(recipe.image),
+                            fit: BoxFit.cover,
+                            opacity: 0.7)),
                   ),
-                )
-              ],
+                  Positioned(
+                    //BUTTTON
+                    right: 0,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Provider.of<RecipeProvider>(context, listen: false)
+                            .removeFromMyRecipes(recipe);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          minimumSize: Size(20, 20)),
+                      child: Icon(
+                        Icons.close,
+                        size: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
-          //image
         ),
       ),
     );

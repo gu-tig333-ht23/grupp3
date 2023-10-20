@@ -1,10 +1,11 @@
 //ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../util/recipe.dart';
-import '../pages/my_recipes_page.dart';
+import '../../util/recipe.dart';
+import '../../pages/my_recipes_page.dart';
 import 'recipe_chosen_mp.dart';
 
+//Basic MealPlannerTile outline
 class MealPlannerTile extends StatelessWidget {
   String dayOfWeek;
   Recipe? recipe;
@@ -84,15 +85,16 @@ class MealPlannerTile extends StatelessWidget {
   }
 }
 
+//returns the inside of MealPlannerTile based on if there is a recipe chosen or not
 Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
     BuildContext context) {
   return isRecipeChosen
-      //om recept finns??
+      //RECIPE CHOSEN
       ? RecipeChosenMP(
           recipe: recipe,
           dayOfWeek: dayOfWeek,
         )
-      //OM RECEPT EJ FINNS
+      //NO RECIPE IS CHOSEN
       : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -100,7 +102,7 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
               'You have not chosen a recipe for $dayOfWeek',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).pushReplacement(

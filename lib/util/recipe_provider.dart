@@ -1,62 +1,109 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import '/util/recipe_info.dart';
+import '/util/api.dart';
 import '/util/recipe.dart';
+//import 'db.dart';
 
 class RecipeProvider extends ChangeNotifier {
-  //list of recipe
-  // ignore: prefer_final_fields
-  List<Recipe> _randomRecipeList = [
-    Recipe(
-      title: 'Pasta carbonara',
-      readyInMinutes: 40,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Korv Stroganoff',
-      readyInMinutes: 20,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Tacos',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Ceasar Sallad',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Pasta bolognaise',
-      readyInMinutes: 30,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Dillfisk',
-      readyInMinutes: 20,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Lasagne',
-      readyInMinutes: 45,
-      image: 'lib/images/stockfood.png',
-    ),
-    Recipe(
-      title: 'Zuccinipasta',
-      readyInMinutes: 10,
-      image: 'lib/images/stockfood.png',
-    ),
-  ];
+  // final DB _db;
+  // List<Recipe> _recipes = [];
+  // List<Recipe> get recipes => _recipes;
 
-  // ignore: prefer_final_fields
-  List<Recipe> _myRecipeList = [];
+  // RecipeProvider(DB db) : _db = db;
 
-  //lägga till ett recept i _myRecipeList
-  String getImage(recipe) {
-    return recipe.image;
+  // //get recipes
+  // void fetchRecipes() async {
+  //   _myRecipeList = await _db.getRecipes();
+  //   notifyListeners();
+  // }
+
+  // //add recipes
+  // void addToMyRecipes(recipe) async {
+  //   await _db.saveToMyRecipes(recipe);
+  //   fetchRecipes();
+  // }
+
+  // void removeFromMyRecipes(Recipe recipe) {
+  //   _db.removeFromMyRecipes(recipe);
+  // }
+
+  // Fetch recipe from API
+  void fetchRandomRecipes() async {
+    List<Recipe> recipes = await RecipeApi.getRandomRecipes();
+    _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
+    notifyListeners();
   }
 
+  //recepten vi hämtar från API
+  final List<Recipe> _randomRecipeList = [];
+
+  List<Recipe> get randomRecipeList => _randomRecipeList;
+
+// för att visa rätt RecipeInfo
+  int recipeID = 656846;
+
+  void chooseRecipeID(Recipe recipe) {
+    recipeID = recipe.id;
+    notifyListeners();
+  }
+
+  fetchIngredientsFromApi() async {
+    notifyListeners();
+    RecipeInfo recipeInfo = await RecipeApi.getIngredients(recipeID);
+    print('${recipeInfo.toString()} fetchIngredientsFromApi done');
+    _selectedRecipeInfo = recipeInfo;
+    notifyListeners();
+  }
+
+  RecipeInfo? _selectedRecipeInfo;
+
+  RecipeInfo? get selectedRecipeInfo => _selectedRecipeInfo;
+
+  // Remove weird tokens from the instructions from api
+  String removeHtmlTags(String htmlText) {
+    // Check if the string contains the specific tokens
+    if (!htmlText.contains('<ol>') || !htmlText.contains('<li>')) {
+      return htmlText;
+    }
+
+    RegExp exp =
+        RegExp(r"<li>(.*?)</li>", multiLine: true, caseSensitive: false);
+
+    var matches = exp.allMatches(htmlText);
+    StringBuffer sb = StringBuffer();
+
+    int count = 1;
+    for (var match in matches) {
+      sb.write('$count. ${match.group(1)}\n');
+      count++;
+    }
+
+    return sb.toString();
+  }
+
+  // Format diets for displaying in view recipes
+  String formatDiets(String diets) {
+    // Split the diets string based on comma (and possible space)
+    List<String> dietList =
+        diets.contains(', ') ? diets.split(', ') : diets.split(',');
+
+    // Prepend a dot to each diet
+    List<String> formattedDietList = dietList.map((diet) => '• $diet').toList();
+
+    // Join them back with line breaks
+    return formattedDietList.join('\n');
+  }
+
+  //recepten vi sparat
+  List<Recipe> _myRecipeList = [];
+
+  List<Recipe> get myRecipeList {
+    return _myRecipeList;
+  }
+
+  //lägga till ett recept i _myRecipeList
   void addToMyRecipes(recipe) {
     _myRecipeList.add(recipe);
     notifyListeners();
@@ -67,12 +114,8 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Recipe> get randomRecipeList {
-    return _randomRecipeList;
-  }
-
-  List<Recipe> get myRecipeList {
-    return _myRecipeList;
+  String getImage(recipe) {
+    return recipe.image;
   }
 
   //för att titlar på de 7 korten ska finnas i MP
@@ -94,28 +137,14 @@ class RecipeProvider extends ChangeNotifier {
     return selectedDay;
   }
 
-//no more tinder for you
-  bool _cardsAre = false;
-  get cardsAre => _cardsAre;
-
-  cardsAreEmpty(bool isEmpty) {
-    _cardsAre = isEmpty;
-    notifyListeners();
-  }
-
-//do shit
+//Mealplanner things
   void saveRecipeToMP(String chosenDay, Recipe chosenRecipe) {
-    //bara för print, tar bort senare :)
-    String mealPlannerRecipe = chosenRecipe.title.toString();
-
     _plannerData[addPlannerItem(chosenDay, chosenRecipe)];
-
-    print('$mealPlannerRecipe is chosen for $selectedDay');
     notifyListeners();
   }
 
   final Map<String, Recipe?> _plannerData = {
-    'Monday': null, //Monday
+    'Monday': null,
     'Tuesday': null,
     'Wednesday': null,
     'Thursday': null,
@@ -135,6 +164,22 @@ class RecipeProvider extends ChangeNotifier {
   removePlannerItem(String day, Recipe item) {
     plannerData[day] = null;
     print(plannerData);
+    notifyListeners();
+  }
+
+  //Tinder card functions
+  //cardsAre used in homepage to see if there are cards to show or not
+  bool _cardsAre = false;
+  get cardsAre => _cardsAre;
+
+  cardsAreEmpty(bool isEmpty) {
+    _cardsAre = isEmpty;
+    notifyListeners();
+  }
+
+  refreshCards(bool isEmpty) {
+    _randomRecipeList.clear();
+    _cardsAre = !_cardsAre;
     notifyListeners();
   }
 }
