@@ -4,30 +4,38 @@ import 'package:flutter/material.dart';
 import '/util/recipe_info.dart';
 import '/util/api.dart';
 import '/util/recipe.dart';
-//import 'db.dart';
+import 'db.dart';
 
 class RecipeProvider extends ChangeNotifier {
-  // final DB _db;
-  // List<Recipe> _recipes = [];
-  // List<Recipe> get recipes => _recipes;
+  //DB
+  final DB _db;
+  RecipeProvider(DB db) : _db = db;
 
-  // RecipeProvider(DB db) : _db = db;
+  //get recipes from DB
+  void fetchRecipes() async {
+    _myRecipeList = await _db.getRecipes();
+    notifyListeners();
+  }
 
-  // //get recipes
-  // void fetchRecipes() async {
-  //   _myRecipeList = await _db.getRecipes();
-  //   notifyListeners();
-  // }
+  //recepten vi sparat
+  List<Recipe> _myRecipeList = [];
 
-  // //add recipes
-  // void addToMyRecipes(recipe) async {
-  //   await _db.saveToMyRecipes(recipe);
-  //   fetchRecipes();
-  // }
+  List<Recipe> get myRecipeList {
+    return _myRecipeList;
+  }
 
-  // void removeFromMyRecipes(Recipe recipe) {
-  //   _db.removeFromMyRecipes(recipe);
-  // }
+  //add recipes to DB & myRecipeList
+  void addToMyRecipes(Recipe recipe) async {
+    myRecipeList.add(recipe);
+    await _db.saveToMyRecipes(recipe.id, recipe.title, recipe.image);
+    fetchRecipes();
+  }
+
+  //remove recipe from DB
+  void removeFromMyRecipes(Recipe recipe) {
+    myRecipeList.remove(recipe);
+    _db.removeFromMyRecipes(recipe);
+  }
 
   // Fetch recipe from API
   void fetchRandomRecipes() async {
@@ -94,24 +102,6 @@ class RecipeProvider extends ChangeNotifier {
 
     // Join them back with line breaks
     return formattedDietList.join('\n');
-  }
-
-  //recepten vi sparat
-  List<Recipe> _myRecipeList = [];
-
-  List<Recipe> get myRecipeList {
-    return _myRecipeList;
-  }
-
-  //lägga till ett recept i _myRecipeList
-  void addToMyRecipes(recipe) {
-    _myRecipeList.add(recipe);
-    notifyListeners();
-  }
-
-  void removeFromMyRecipes(recipe) {
-    _myRecipeList.remove(recipe);
-    notifyListeners();
   }
 
   String getImage(recipe) {
@@ -181,5 +171,14 @@ class RecipeProvider extends ChangeNotifier {
     _randomRecipeList.clear();
     _cardsAre = !_cardsAre;
     notifyListeners();
+  }
+
+  checkIfNull(value) {
+    if (value == null) {
+      String errMessage = 'Sorry, we could not find this information for you';
+      return errMessage;
+    } else {
+      return value;
+    }
   }
 }

@@ -5,15 +5,17 @@ import '/util/recipe_provider.dart';
 import '/pages/intro_page.dart';
 import 'package:provider/provider.dart';
 import 'util/db.dart';
-//import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DB db = DB();
   await db.init();
 
-  RecipeProvider state = RecipeProvider();
-  state.fetchRandomRecipes(); //fetch recipies from API when starting the app
+  RecipeProvider state = RecipeProvider(db);
+
+  state.fetchRecipes();
+  state.fetchRandomRecipes(); //fetches recipies from API when starting the app
 
   runApp(
     ChangeNotifierProvider(
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
-        //textTheme: GoogleFonts.montserratTextTheme(),
+        textTheme: GoogleFonts.montserratTextTheme(),
       ),
       home: IntroPage(),
     );
@@ -44,6 +46,4 @@ class MyApp extends StatelessWidget {
 /*
 FIXA:
 my_recipes_page
-- search bar?
-
- */
+search bar?*/

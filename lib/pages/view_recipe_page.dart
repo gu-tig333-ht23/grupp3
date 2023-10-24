@@ -44,6 +44,13 @@ class ViewRecipe extends StatelessWidget {
 
   final Recipe recipe;
 
+  String capitalizeFirstLetterOfEachWord(String text) {
+    return text
+        .split(' ')
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     bool checkBoxChecked = false;
@@ -99,8 +106,11 @@ class ViewRecipe extends StatelessWidget {
                     height: 50,
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(rp.formatDiets(recipeInfo.diets),
-                          style: TextStyle(fontSize: 15)),
+                      child: Text(
+                        capitalizeFirstLetterOfEachWord(
+                            rp.formatDiets(recipeInfo.diets)),
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                   ),
                 ],
@@ -113,11 +123,13 @@ class ViewRecipe extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('INGREDIENTS',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
+                Text(
+                  'INGREDIENTS',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(
                   height: 230,
                   child: ListView.builder(
@@ -129,7 +141,10 @@ class ViewRecipe extends StatelessWidget {
                           //checkbox is not done yet if we want to be able to actually check the boxes
                           leading: Checkbox(
                               value: checkBoxChecked, onChanged: onChanged),
-                          title: Text(recipeInfo.ingredientsName[index]),
+                          title: Text(
+                            capitalizeFirstLetterOfEachWord(rp.checkIfNull(
+                                recipeInfo.ingredientsName[index])),
+                          ),
                         );
                       }),
                 )
@@ -148,7 +163,11 @@ class ViewRecipe extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     )),
                 //funcion from provider ensures there are no weird icons in instructions.
-                Text(rp.removeHtmlTags(recipeInfo.instructions)),
+                Text(
+                  rp.checkIfNull(
+                    rp.removeHtmlTags(recipeInfo.instructions),
+                  ),
+                ),
               ],
             ),
           ),
