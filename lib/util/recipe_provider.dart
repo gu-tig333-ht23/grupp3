@@ -173,12 +173,9 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkIfNull(value) {
-    if (value == null) {
-      String errMessage = 'Sorry, we could not find this information for you';
-      return errMessage;
-    } else {
-      return value;
-    }
+  checkIfNull(value,
+      [String errMessage =
+          'Sorry, we could not find this information for you']) {
+    return value ?? errMessage;
   }
 }

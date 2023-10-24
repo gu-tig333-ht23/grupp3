@@ -60,17 +60,19 @@ class RecipeApi {
 
     if (obj['extendedIngredients'] != null) {
       ingredientsNames = (obj['extendedIngredients'] as List)
-          .map((ingredient) => ingredient['nameClean'] as String)
+          .map((ingredient) => ingredient['nameClean'] as String? ?? "")
+          .where((name) => name.isNotEmpty)
           .toList();
     }
 
-    String diet = obj['diets'].isNotEmpty ? obj['diets'][0] : '';
+    String diet =
+        obj['diets'] != null && obj['diets'].isNotEmpty ? obj['diets'][0] : '';
 
     RecipeInfo recipeInfo = RecipeInfo(
       ingredientsName: ingredientsNames,
-      cookTime: obj['readyInMinutes'],
+      cookTime: obj['readyInMinutes'] ?? 0,
       diets: diet,
-      instructions: obj['instructions'],
+      instructions: obj['instructions'] ?? '',
     );
 
     print('hej instansering klar.');
