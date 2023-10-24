@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -6,9 +8,8 @@ import '/util/recipe_info.dart';
 
 const String ENDPOINTrandom =
     'https://api.spoonacular.com/recipes/complexSearch';
-const String ENDPOINTing =
-    'https://api.spoonacular.com/recipes/656846/information';
-const String apiKey = 'd5d1ef4b65e24b1798f732f1798213da';
+const String ENDPOINTing = 'https://api.spoonacular.com/recipes';
+const String apiKey = 'e47fbe5acc954d6d8825bdecad67c254';
 
 class RecipeApi {
   static Future<List<Recipe>> getRandomRecipes() async {
@@ -21,9 +22,12 @@ class RecipeApi {
     try {
       var response = await http.get(url, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
+
+      if (data['results'] == null || data['results'].isEmpty) {
+        throw Exception('No recipes found in the API response.');
+      }
+
       Recipe recipefromAPI = Recipe.fromMap(data['results'][0]);
-      print(data); // prints out map of items from api correctly
-      print(recipefromAPI.title);
       Recipe recipe = Recipe(
         id: recipefromAPI.id,
         title: recipefromAPI.title,
@@ -31,7 +35,7 @@ class RecipeApi {
       );
 
       print(recipe.title);
-      print(recipe.image);
+
       List<Recipe> recipes =
           data['results'].map<Recipe>((item) => Recipe.fromMap(item)).toList();
       return recipes;
@@ -40,59 +44,37 @@ class RecipeApi {
     }
   }
 
-  static Future<RecipeInfo> getIngredients() async {
-    Uri url1 = Uri.parse('$ENDPOINTing?apiKey=$apiKey');
-    /*final response =
-        await http.get(url1, headers: {"Content-Type": "application/json"});*/
+  static Future<RecipeInfo> getIngredients(int recipeId) async {
+    Uri url1 = Uri.parse('$ENDPOINTing/$recipeId/information?apiKey=$apiKey');
 
+    print('hej vi har endpoint');
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
-    try {
-      var response = await http.get(url1, headers: headers);
-      Map<String, dynamic> obj = json.decode(response.body);
+    var response = await http.get(url1, headers: headers);
+    Map<String, dynamic> obj = json.decode(response.body);
+    print('hej decode klart');
 
-      // Extracting 'nameClean' from each 'extendedIngredients' item and collecting them into a list.
-      List<String> ingredientNames = List<String>.from(
-          obj['extendedIngredients'].map((obj) => obj['nameClean']));
+    List<String> ingredientsNames = [];
 
-      //RecipeInfo sum = RecipeInfo.fromMap(obj['summary']);
-      //RecipeInfo timeCook = RecipeInfo.fromMap(obj['readyInMinutes']);
-      RecipeInfo timeCook =
-          RecipeInfo.fromMap({'readyInMinutes': obj['readyInMinutes']});
-      RecipeInfo dietsFood = RecipeInfo.fromMap(obj['diets'][0]);
-      RecipeInfo howTo = RecipeInfo.fromMap(obj['instructions']);
-
-      RecipeInfo recipeInfo = RecipeInfo(
-        ingredientsName: ingredientNames,
-        //summary: sum.summary,
-        cookTime: timeCook.cookTime,
-        diets: dietsFood.diets,
-        instructions: howTo.instructions,
-      );
-
-      /*RecipeInfo ingName = RecipeInfo.fromMap(
-          obj['extendedIngredients'].map((obj) => obj['nameClean']));
-      RecipeInfo sum = RecipeInfo.fromMap(obj['summary']);
-      RecipeInfo timeCook = RecipeInfo.fromMap(obj['readyInMinutes']);
-      RecipeInfo dietsFood = RecipeInfo.fromMap(obj['diets'][0]);
-      RecipeInfo howTo = RecipeInfo.fromMap(obj['instructions']);
-
-      RecipeInfo recipeInfo = RecipeInfo(
-        ingredientsName: ingName.ingredientsName,
-        summary: sum.summary,
-        cookTime: timeCook.cookTime,
-        diets: dietsFood.diets,
-        instructions: howTo.instructions,
-      );*/
-
-      print(recipeInfo.ingredientsName);
-      print(recipeInfo.cookTime);
-
-      return recipeInfo;
-    } catch (err) {
-      throw err.toString();
+    if (obj['extendedIngredients'] != null) {
+      ingredientsNames = (obj['extendedIngredients'] as List)
+          .map((ingredient) => ingredient['nameClean'] as String)
+          .toList();
     }
+
+    String diet = obj['diets'].isNotEmpty ? obj['diets'][0] : '';
+
+    RecipeInfo recipeInfo = RecipeInfo(
+      ingredientsName: ingredientsNames,
+      cookTime: obj['readyInMinutes'],
+      diets: diet,
+      instructions: obj['instructions'],
+    );
+
+    print('hej instansering klar.');
+
+    return recipeInfo;
   }
 }

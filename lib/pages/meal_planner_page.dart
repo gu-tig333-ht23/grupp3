@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../util/recipe_provider.dart';
 import '../widgets/meal_planner_tile.dart';
 
-//the page, bara appbar & scaffold
 class MealPlannerPage extends StatelessWidget {
   const MealPlannerPage({super.key});
 
@@ -30,18 +29,12 @@ class MealPlannerPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ViewMealPlannerTile(),
-          )
-        ],
-      ),
+      body: ViewMealPlannerTile(),
     );
-  } //visa veckodagarna
+  }
 }
 
-//för att visa våra veckodagar
+//to show the different mealplanner tiles
 class ViewMealPlannerTile extends StatelessWidget {
   const ViewMealPlannerTile({super.key});
 
@@ -55,11 +48,13 @@ class ViewMealPlannerTile extends StatelessWidget {
           final recipe = value.plannerData[dayOfWeek];
 
           return recipe != null
+              //if a recipe is chosen
               ? MealPlannerTile(
                   dayOfWeek: dayOfWeek,
                   recipe: recipe,
                   isRecipeChosen: true,
                 )
+              //if a recipe is not chosen
               : MealPlannerTile(
                   dayOfWeek: dayOfWeek,
                   recipe: recipe,

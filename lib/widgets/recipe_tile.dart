@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import '/pages/view_recipe_page.dart';
@@ -115,27 +115,30 @@ class RecipeTile extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  // Text(
-                  //   '${recipe.readyInMinutes} minutes',
-                  //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  // ),
 
                   //VIEW RECIPE
-                  ElevatedButton(
-                    onPressed: () {
-                      //view recipe page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ViewRecipePage(recipe: recipe);
-                          },
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'View recipe',
-                      style: TextStyle(fontSize: 12, color: Colors.black),
+                  Consumer<RecipeProvider>(
+                    builder: (context, value, child) => ElevatedButton(
+                      onPressed: () async {
+                        //add function to get recpieinfo
+                        context.read<RecipeProvider>().chooseRecipeID(recipe);
+                        await context
+                            .read<RecipeProvider>()
+                            .fetchIngredientsFromApi();
+                        //view recipe page
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ViewRecipePage(recipe: recipe);
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'View recipe',
+                        style: TextStyle(fontSize: 12, color: Colors.black),
+                      ),
                     ),
                   ),
                   SizedBox(height: 4),
@@ -153,11 +156,12 @@ class RecipeTile extends StatelessWidget {
                 ],
               ),
             ),
-            //image and close button
+            //REMOVE BUTTON PLACED ON TOP OF IMAGE
             Flexible(
               child: Stack(
                 children: [
                   Container(
+                    //IMAGE
                     width: 150,
                     height: 140,
                     decoration: BoxDecoration(
@@ -169,6 +173,7 @@ class RecipeTile extends StatelessWidget {
                             opacity: 0.7)),
                   ),
                   Positioned(
+                    //BUTTTON
                     right: 0,
                     child: ElevatedButton(
                       onPressed: () {

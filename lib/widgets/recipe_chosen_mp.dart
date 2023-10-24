@@ -6,6 +6,7 @@ import '/util/recipe.dart';
 import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
+//INSIDE OF MEALPLANNER TILE, RECIPE IS CHOSEN
 class RecipeChosenMP extends StatelessWidget {
   final String dayOfWeek;
   final Recipe? recipe;
@@ -21,8 +22,10 @@ class RecipeChosenMP extends StatelessWidget {
           width: 24,
           height: 24,
         ),
+
         GestureDetector(
           child: Container(
+            //IMAGE
             width: MediaQuery.of(context).size.width * 0.6,
             height: 130,
             decoration: BoxDecoration(
@@ -34,6 +37,7 @@ class RecipeChosenMP extends StatelessWidget {
                 opacity: 0.6,
               ),
             ),
+            //TITLE
             child: Center(
               child: Text(
                 recipe!.title,
@@ -46,6 +50,7 @@ class RecipeChosenMP extends StatelessWidget {
               ),
             ),
           ),
+          //NAVIGATE TO VIEWRECIPE PAGE WHEN IMAGE/TITLE IS CLICKED
           onTap: () {
             Navigator.push(
               context,
@@ -57,6 +62,7 @@ class RecipeChosenMP extends StatelessWidget {
             );
           },
         ),
+        //REMOVE RECIPE FROM MEALPLANNER
         IconButton(
           icon: Icon(Icons.close),
           onPressed: () {

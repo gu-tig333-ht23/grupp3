@@ -9,6 +9,14 @@ class Recipe {
     required this.image,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'image': image,
+    };
+  }
+
   factory Recipe.fromMap(Map<String, dynamic> data) {
     return Recipe(
       id: data['id'],

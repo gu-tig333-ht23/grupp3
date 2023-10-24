@@ -2,7 +2,7 @@
 
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:mealmate/util/recipe_provider.dart';
+import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
 class TinderCard extends StatelessWidget {
@@ -32,13 +32,13 @@ class TinderCard extends StatelessWidget {
         swipeOptions: AppinioSwipeOptions.only(left: true, right: true),
         controller: swipecontroller,
         onEnd: () {
-          print('end reached');
           Provider.of<RecipeProvider>(context, listen: false)
-              .cardsAreEmpty(true);
+              .cardsAreEmpty(true); //to show EmptyCards from HomePage
         },
         onSwipe: (index, direction) {
           _swipe(index, direction, value, snackis);
         },
+        cardsCount: value.randomRecipeList.length,
         cardsBuilder: (context, index) {
           return Padding(
             //padding weird to make sure snackis doesn't cover buttons
@@ -77,6 +77,7 @@ class TinderCard extends StatelessWidget {
                             ),
                             color: Color.fromRGBO(204, 229, 134, 1.000),
                             image: DecorationImage(
+                              //image from API
                               image: NetworkImage(
                                   value.randomRecipeList[index].image),
                               fit: BoxFit.cover,
@@ -90,6 +91,7 @@ class TinderCard extends StatelessWidget {
                         bottom: 100,
                         left: 50,
                         right: 50,
+                        //BACKGROUND BOX FOR TITLE
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
@@ -105,6 +107,7 @@ class TinderCard extends StatelessWidget {
                               ),
                             ],
                           ),
+                          //TITLE
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: Column(
@@ -118,11 +121,6 @@ class TinderCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                // Center(
-                                //   child: Text(
-                                //     '${value.randomRecipeList[index].readyInMinutes.toString()} minutes',
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
@@ -130,26 +128,28 @@ class TinderCard extends StatelessWidget {
                       ),
                       //ICONS
                       Positioned.fill(
+                        //to make sure icons on other cards doesn't show
+                        bottom: 2,
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
+                              //DELETE
                               IconButton(
                                 icon: Icon(Icons.close,
                                     size: 60, color: Colors.red),
                                 onPressed: () {
                                   swipecontroller.swipeLeft();
-                                  print('X pressed');
                                 },
                               ),
+                              //SAVE
                               IconButton(
                                 icon: Icon(Icons.favorite_border_rounded,
                                     size: 60, color: Colors.green),
                                 onPressed: () {
                                   swipecontroller.swipeRight();
-                                  print('<3 pressed');
                                 },
                               ),
                             ],
@@ -163,7 +163,6 @@ class TinderCard extends StatelessWidget {
             ),
           );
         },
-        cardsCount: value.randomRecipeList.length,
       ),
     );
   }
@@ -172,18 +171,20 @@ class TinderCard extends StatelessWidget {
   void _swipe(int index, AppinioSwiperDirection direction, RecipeProvider value,
       void snackis(String text)) {
     index = index - 1;
+    //ON SWIPE RIGHT
     if (direction.name == 'right' &&
         index >= 0 &&
         index <= value.randomRecipeList.length) {
+      //IF RECIPE IS NOT ALREADY SAVED, SAVE RECIPE
       if (!value.myRecipeList.contains(value.randomRecipeList[index])) {
         value.addToMyRecipes(value.randomRecipeList[index]);
         snackis('Recipe saved');
       } else {
+        //RECIPE IS SAVED
         snackis('Recipe is already saved in My Recipes');
       }
     } else {
-      print(
-          'You swiped: ${direction.name} and ${value.randomRecipeList[index].title} was removed');
+      //SWIPE LEFT: RECIPE IS PUSHED AWAY
     }
   }
 }

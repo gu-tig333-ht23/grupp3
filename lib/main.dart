@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import '/util/recipe_provider.dart';
 import '/pages/intro_page.dart';
 import 'package:provider/provider.dart';
+import 'util/db.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DB db = DB();
+  await db.init();
+
   RecipeProvider state = RecipeProvider();
-  state.fetchRandomRecipes();
+  state.fetchRandomRecipes(); //fetch recipies from API when starting the app
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => state,
@@ -24,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'MEALMATE',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
@@ -37,10 +43,7 @@ class MyApp extends StatelessWidget {
 
 /*
 FIXA:
-home_page
-- refresh knapp när man har sett alla recept, då ska 10 nya visas
-- filter?
 my_recipes_page
 - search bar?
-- filter?
+
  */

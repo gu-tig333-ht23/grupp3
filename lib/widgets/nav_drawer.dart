@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../pages/home_page.dart';
-import '../pages/meal_planner_page.dart';
-import '../pages/my_recipes_page.dart';
+import '../../pages/home_page.dart';
+import '../../pages/meal_planner_page.dart';
+import '../../pages/my_recipes_page.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({
@@ -24,7 +24,7 @@ class NavDrawer extends StatelessWidget {
               'lib/images/smaller_logo.png',
             )),
 
-            //homepage / discover recipes
+            //HOMEPAGE / DISCOVER RECIPES
             ListTile(
               leading: const Icon(Icons.image_search),
               title: const Text(
@@ -36,7 +36,7 @@ class NavDrawer extends StatelessWidget {
                     .push(MaterialPageRoute(builder: (context) => HomePage()));
               },
             ),
-            //meal plan
+            //MEAL PLAN PAGE
             ListTile(
               leading: const Icon(Icons.view_list),
               title: const Text(
@@ -48,7 +48,7 @@ class NavDrawer extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => MealPlannerPage()));
               },
             ),
-            //my saved recipes
+            //MY SAVED RECIPES
             ListTile(
               leading: const Icon(Icons.cookie),
               title: const Text(

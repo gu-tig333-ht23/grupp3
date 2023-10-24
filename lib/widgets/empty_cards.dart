@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mealmate/pages/home_page.dart';
-import 'package:mealmate/util/recipe_provider.dart';
+import '/pages/home_page.dart';
+import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
 class EmptyCards extends StatelessWidget {
   const EmptyCards({super.key});
-
+  //THE USER IS OUT OF TINDERCARDS
   @override
   Widget build(BuildContext context) {
     return Consumer<RecipeProvider>(
@@ -16,32 +16,44 @@ class EmptyCards extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                    'lib/images/avo_icon.png'), // Replace with the correct image path
-                const SizedBox(
-                    height: 16), // Add some spacing between the image and text
-                const Text(
-                  "We are out of recipes, would you like to refresh?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      decoration: TextDecoration.none),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black, width: 2),
+                      ),
+                      child: Column(children: [
+                        const Text(
+                          "We are out of recipes! Press the refresh button for more recipes.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          iconSize: 60,
+                          color: Colors.green,
+                          onPressed: () {
+                            //FETCH NEW RANDOM RECIPES
+                            Provider.of<RecipeProvider>(context, listen: false)
+                                .fetchRandomRecipes();
+                            //CLEAR LIST AND ADD NEW RECIPES
+                            Provider.of<RecipeProvider>(context, listen: false)
+                                .refreshCards(false);
+                            //GO BACK TO HOMEPPAGE TO VIEW THE NEW CARDS
+                            TinderOrEmptyWidget();
+                          },
+                        ),
+                      ])),
                 ),
-                const SizedBox(
-                    height: 16), // Add spacing between text and button
-                IconButton(
-                  icon: const Icon(Icons.refresh), iconSize: 60,
-                  color: Colors.green, // You can customize the icon
-                  onPressed: () {
-                    Provider.of<RecipeProvider>(context, listen: false)
-                        .fetchRandomRecipes();
-                    Provider.of<RecipeProvider>(context, listen: false)
-                        .refreshCards(false);
-                    TinderOrEmptyWidget();
-                    // Add your refresh functionality here
-                  },
-                ),
+                const SizedBox(height: 16),
+                Image.asset('lib/images/avo_icon.png'),
               ],
             ),
           ),

@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import '/widgets/recipe_tile.dart';
+import '/widgets/no_saved_recipes.dart';
+import '../widgets/recipe_tile.dart';
 import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -40,14 +41,21 @@ class ViewMyRecipes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RecipeProvider>(
-      builder: (context, value, child) => ListView.builder(
-        itemCount: value.myRecipeList.length,
-        itemBuilder: (context, index) {
-          return RecipeTile(
-            recipe: value.myRecipeList[index],
-          );
-        },
-      ),
+      builder: (context, value, child) {
+        //IF THERE ARE NO SAVED RECIPES
+        if (value.myRecipeList.isEmpty) {
+          return NoSavedRecipes();
+        }
+        //WHEN THERE ARE RECIPES TO SHOW
+        return ListView.builder(
+          itemCount: value.myRecipeList.length,
+          itemBuilder: (context, index) {
+            return RecipeTile(
+              recipe: value.myRecipeList[index],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -1,31 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:mealmate/widgets/tinder_card.dart';
+import '../widgets/tinder_card.dart';
 import 'package:provider/provider.dart';
+import '../util/api.dart';
 import '../util/recipe_provider.dart';
 import '../widgets/empty_cards.dart';
 import '../widgets/nav_drawer.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
-
-//ÄR NOG ANVÄNDBART FÖR ATT VISA DET VI HÄMTAT FRÅN API, LADD SKÄRM
-/*//SHOW LIST IN HOMEPAGE
-      body: FutureBuilder(
-        future: API.getList(),
-        builder: ((context, snapshot) {
-          //SHOW DATA
-          if (snapshot.connectionState == ConnectionState.done) {
-            return const ViewMyList();
-          }
-          //LOADING SCREEN
-          else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        }),
-      ), 
-*/
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
@@ -48,21 +31,50 @@ class HomePage extends StatelessWidget {
           Padding(
               padding: EdgeInsets.all(8),
               child:
-                  //logo in corner
+                  //logo button, shows alert dialog with tutorial info
                   MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  _showTutorialDialog(context);
+                },
                 shape: CircleBorder(),
-                minWidth: 0, // Set minWidth to 0 to make it circular
-                height: 50, // Adjust height as needed
+                minWidth: 0,
+                height: 50,
                 child: Image.asset('lib/images/avo_icon.png'),
-              )
-              //Image.asset('lib/images/avo_icon.png'),
-              ),
+              )),
         ],
       ),
       //navigation drawer
       drawer: NavDrawer(context: context),
-      body: TinderOrEmptyWidget(),
+      body: FutureBuilder(
+        future: RecipeApi.getRandomRecipes(),
+        builder: ((context, snapshot) {
+          //SHOW DATA
+          if (snapshot.connectionState == ConnectionState.done) {
+            return TinderOrEmptyWidget();
+          }
+          //LOADING SCREEN
+          else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }),
+      ),
+    );
+  }
+
+  void _showTutorialDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: AlertDialog(
+            content: Text(
+                "Hello!\n\nBegin by swiping on recipes. The recipes you like will be saved and can later be used to create a mealplan from.\n\nNavigate to different pages via the button in the top left corner."),
+          ),
+        );
+      },
     );
   }
 }

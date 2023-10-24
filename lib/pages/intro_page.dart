@@ -15,6 +15,7 @@ class _IntroPageState extends State<IntroPage> {
     _navigateToHomePageAfterDelay();
   }
 
+  //automatic navigation to HomePage after 3 seconds
   _navigateToHomePageAfterDelay() async {
     await Future.delayed(const Duration(seconds: 3));
     Navigator.of(context)
