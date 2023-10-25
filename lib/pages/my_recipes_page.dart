@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import '/widgets/no_saved_recipes.dart';
+import '../widgets/no_saved_recipes.dart';
 import '../widgets/recipe_tile.dart';
 import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';

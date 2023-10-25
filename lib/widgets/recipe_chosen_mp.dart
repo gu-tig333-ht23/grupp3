@@ -67,7 +67,7 @@ class RecipeChosenMP extends StatelessWidget {
           icon: Icon(Icons.close),
           onPressed: () {
             Provider.of<RecipeProvider>(context, listen: false)
-                .removePlannerItem(dayOfWeek, recipe!);
+                .removePlannerItem(dayOfWeek);
           },
         ),
       ],
