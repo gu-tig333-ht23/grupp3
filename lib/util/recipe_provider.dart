@@ -19,6 +19,7 @@ class RecipeProvider extends ChangeNotifier {
 
   //recepten vi sparat
   List<Recipe> _myRecipeList = [];
+
   List<Recipe> get myRecipeList {
     return _myRecipeList;
   }
@@ -40,7 +41,9 @@ class RecipeProvider extends ChangeNotifier {
 
   // Fetch recipe from API
   void fetchRandomRecipes() async {
-    List<Recipe> recipes = await RecipeApi.getRandomRecipes();
+    List<Recipe>? recipes = await RecipeApi.getRandomRecipes((message) {
+      print(message);
+    });
     _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
     notifyListeners();
   }
@@ -101,6 +104,12 @@ class RecipeProvider extends ChangeNotifier {
 
     // Join them back with line breaks
     return formattedDietList.join('\n');
+  }
+
+  checkIfNull(value,
+      [String errMessage =
+          'Sorry, we could not find this information for you']) {
+    return value ?? errMessage;
   }
 
 //används denna????
