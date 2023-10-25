@@ -14,8 +14,9 @@ void main() async {
 
   RecipeProvider state = RecipeProvider(db);
 
-  state.fetchRecipes();
-  state.fetchRandomRecipes(); //fetches recipies from API when starting the app
+  state.fetchRecipes(); //fetch recipes from DB
+  state.fetchRandomRecipes(); //fetch recipies from API when starting the app
+  state.fetchPlannerData(); //fetch mealplan from DB
 
   runApp(
     ChangeNotifierProvider(
@@ -42,8 +43,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*
-FIXA:
-my_recipes_page
-search bar?*/

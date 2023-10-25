@@ -58,7 +58,7 @@ class RecipeTile extends StatelessWidget {
                             print(
                                 '$recipe is going to be saved to $selectedDay');
                             //print(chosenDay);
-                            pp.saveRecipeToMP(selectedDay, recipe);
+                            pp.addPlannerItem(selectedDay, recipe);
                             Navigator.of(context).pop();
                           },
                           child: Text('Save',
@@ -150,7 +150,7 @@ class RecipeTile extends StatelessWidget {
                     icon: Icon(Icons.add),
                     label: Text(
                       'Add to mealplan',
-                      style: TextStyle(fontSize: 12, color: Colors.black),
+                      style: TextStyle(fontSize: 11, color: Colors.black),
                     ),
                   ),
                 ],

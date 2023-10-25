@@ -9,7 +9,10 @@ import '/util/recipe_info.dart';
 const String ENDPOINTrandom =
     'https://api.spoonacular.com/recipes/complexSearch';
 const String ENDPOINTing = 'https://api.spoonacular.com/recipes';
-const String apiKey = 'd5d1ef4b65e24b1798f732f1798213da';
+const String apiKey = 'f20028b02395416fbe1af1d72d9cb4ee';
+//Emy f20028b02395416fbe1af1d72d9cb4ee
+//Amanda d5d1ef4b65e24b1798f732f1798213da
+//Agge e47fbe5acc954d6d8825bdecad67c254
 
 class RecipeApi {
   static Future<List<Recipe>> getRandomRecipes() async {
@@ -63,6 +66,8 @@ class RecipeApi {
           .map((ingredient) => ingredient['nameClean'] as String? ?? "")
           .where((name) => name.isNotEmpty)
           .toList();
+    } else {
+      print('error');
     }
 
     String diet =

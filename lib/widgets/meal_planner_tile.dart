@@ -100,6 +100,7 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
           children: [
             Text(
               'You have not chosen a recipe for $dayOfWeek',
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             SizedBox(height: 10),

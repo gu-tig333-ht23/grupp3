@@ -15,6 +15,7 @@ class TinderCard extends StatelessWidget {
     void snackis(String text) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          padding: EdgeInsets.only(top: 6),
           backgroundColor: Colors.brown,
           content: Center(
             child: Text(
@@ -178,7 +179,7 @@ class TinderCard extends StatelessWidget {
       //IF RECIPE IS NOT ALREADY SAVED, SAVE RECIPE
       if (!value.myRecipeList.contains(value.randomRecipeList[index])) {
         value.addToMyRecipes(value.randomRecipeList[index]);
-        snackis('Recipe saved!');
+        snackis('Recipe saved');
       } else {
         //RECIPE IS SAVED
         snackis('Recipe is already saved in My Recipes');

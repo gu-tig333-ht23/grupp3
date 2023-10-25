@@ -16,7 +16,7 @@ class ViewRecipePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
         title: Text(
-          'Recipe Info',
+          'RECIPE INFO',
           style: TextStyle(
             fontSize: 30,
           ),
@@ -44,17 +44,10 @@ class ViewRecipe extends StatelessWidget {
 
   final Recipe recipe;
 
-  String capitalizeFirstLetterOfEachWord(String text) {
-    return text
-        .split(' ')
-        .map((word) => word[0].toUpperCase() + word.substring(1))
-        .join(' ');
-  }
-
   @override
   Widget build(BuildContext context) {
     bool checkBoxChecked = false;
-    RecipeInfo? recipeInfo = context.watch<RecipeProvider>().selectedRecipeInfo;
+    RecipeInfo recipeInfo = context.watch<RecipeProvider>().selectedRecipeInfo;
     final rp = Provider.of<RecipeProvider>(context);
     return SingleChildScrollView(
       //so that the page is scrollable
@@ -84,7 +77,7 @@ class ViewRecipe extends StatelessWidget {
               ),
               //COOK TIME
               Text(
-                'Cook time: ${recipeInfo!.cookTime} minutes',
+                'Cook time: ${recipeInfo.cookTime} minutes',
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -106,11 +99,8 @@ class ViewRecipe extends StatelessWidget {
                     height: 50,
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        capitalizeFirstLetterOfEachWord(
-                            rp.formatDiets(recipeInfo.diets)),
-                        style: TextStyle(fontSize: 15),
-                      ),
+                      child: Text(rp.formatDiets(recipeInfo.diets),
+                          style: TextStyle(fontSize: 15)),
                     ),
                   ),
                 ],
@@ -123,13 +113,11 @@ class ViewRecipe extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'INGREDIENTS',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('INGREDIENTS',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    )),
                 SizedBox(
                   height: 230,
                   child: ListView.builder(
@@ -141,10 +129,7 @@ class ViewRecipe extends StatelessWidget {
                           //checkbox is not done yet if we want to be able to actually check the boxes
                           leading: Checkbox(
                               value: checkBoxChecked, onChanged: onChanged),
-                          title: Text(
-                            capitalizeFirstLetterOfEachWord(rp.checkIfNull(
-                                recipeInfo.ingredientsName[index])),
-                          ),
+                          title: Text(recipeInfo.ingredientsName[index]),
                         );
                       }),
                 )
@@ -157,17 +142,24 @@ class ViewRecipe extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('INSTRUCTIONS',
+                if (recipeInfo.instructions.isNotEmpty) ...[
+                  //so that the other recipe info still shows if there are no insructions
+                  Text('INSTRUCTIONS',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  //funcion from provider ensures there are no weird icons in instructions.
+                  Text(rp.removeHtmlTags(recipeInfo.instructions)),
+                ] else ...[
+                  Text(
+                    'INSTRUCTIONS NOT FOUND',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                    )),
-                //funcion from provider ensures there are no weird icons in instructions.
-                Text(
-                  rp.checkIfNull(
-                    rp.removeHtmlTags(recipeInfo.instructions),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
