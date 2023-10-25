@@ -1,5 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
+//Emy f20028b02395416fbe1af1d72d9cb4ee
+//Amanda d5d1ef4b65e24b1798f732f1798213da
+//Agge e47fbe5acc954d6d8825bdecad67c254
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -9,13 +12,11 @@ import '/util/recipe_info.dart';
 const String ENDPOINTrandom =
     'https://api.spoonacular.com/recipes/complexSearch';
 const String ENDPOINTing = 'https://api.spoonacular.com/recipes';
-const String apiKey = 'f20028b02395416fbe1af1d72d9cb4ee';
-//Emy f20028b02395416fbe1af1d72d9cb4ee
-//Amanda d5d1ef4b65e24b1798f732f1798213da
-//Agge e47fbe5acc954d6d8825bdecad67c254
+const String apiKey = 'd5d1ef4b65e24b1798f732f1798213da';
 
 class RecipeApi {
-  static Future<List<Recipe>> getRandomRecipes() async {
+  static Future<List<Recipe>> getRandomRecipes(
+      void Function(String) snackis) async {
     Uri url = Uri.parse('$ENDPOINTrandom?sort=random&apiKey=$apiKey');
 
     Map<String, String> headers = {
@@ -43,7 +44,14 @@ class RecipeApi {
           data['results'].map<Recipe>((item) => Recipe.fromMap(item)).toList();
       return recipes;
     } catch (err) {
-      throw err.toString();
+      if (err.toString().contains('API rate limit exceeded')) {
+        // Display an error message for API rate limit exceeded
+        snackis('API rate limit exceeded. Please try again later.');
+      } else {
+        // Handle other errors as needed
+        print('Error: $err');
+      }
+      return []; // or throw the error further
     }
   }
 
