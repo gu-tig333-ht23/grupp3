@@ -46,7 +46,9 @@ class HomePage extends StatelessWidget {
       //navigation drawer
       drawer: NavDrawer(context: context),
       body: FutureBuilder(
-        future: RecipeApi.getRandomRecipes(),
+        future: RecipeApi.getRandomRecipes((message) {
+          print(message);
+        }),
         builder: ((context, snapshot) {
           //SHOW DATA
           if (snapshot.connectionState == ConnectionState.done) {

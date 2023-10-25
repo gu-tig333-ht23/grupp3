@@ -17,6 +17,17 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<bool> checkboxStates = [];
+
+  void setCheckboxState(int index, bool value) {
+    checkboxStates[index] = value;
+    notifyListeners();
+  }
+
+  void initializeCheckboxStates(int length) {
+    checkboxStates = List.generate(length, (index) => false);
+  }
+
   //recepten vi sparat
   List<Recipe> _myRecipeList = [];
 
@@ -29,27 +40,30 @@ class RecipeProvider extends ChangeNotifier {
     myRecipeList.add(recipe);
     await _db.saveToMyRecipes(recipe.id, recipe.title, recipe.image);
     fetchRecipes();
+    notifyListeners();
   }
 
   //remove recipe from DB
   void removeFromMyRecipes(Recipe recipe) {
-    myRecipeList.remove(recipe);
+    _myRecipeList.remove(recipe);
     _db.removeFromMyRecipes(recipe);
+    notifyListeners();
   }
 
   // Fetch recipe from API
   void fetchRandomRecipes() async {
-    List<Recipe> recipes = await RecipeApi.getRandomRecipes();
+    List<Recipe>? recipes = await RecipeApi.getRandomRecipes((message) {
+      print(message);
+    });
     _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
     notifyListeners();
   }
 
-  //recepten vi hämtar från API
+  //API recipes
   final List<Recipe> _randomRecipeList = [];
-
   List<Recipe> get randomRecipeList => _randomRecipeList;
 
-// för att visa rätt RecipeInfo
+// to show correct recipe info
   int recipeID = 656846;
 
   void chooseRecipeID(Recipe recipe) {
@@ -65,9 +79,15 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  RecipeInfo? _selectedRecipeInfo;
+  late RecipeInfo _selectedRecipeInfo;
+  RecipeInfo get selectedRecipeInfo => _selectedRecipeInfo;
 
-  RecipeInfo? get selectedRecipeInfo => _selectedRecipeInfo;
+  String getFormattedIngredient(Map<String, String> ingredient) {
+    final amount = ingredient['amount'];
+    final unitShort = ingredient['unitShort'];
+
+    return '$amount $unitShort';
+  }
 
   // Remove weird tokens from the instructions from api
   String removeHtmlTags(String htmlText) {
@@ -104,22 +124,15 @@ class RecipeProvider extends ChangeNotifier {
     return formattedDietList.join('\n');
   }
 
-  String getImage(recipe) {
-    return recipe.image;
+  checkIfNull(value,
+      [String errMessage =
+          'Sorry, we could not find this information for you']) {
+    return value ?? errMessage;
   }
 
-  //för att titlar på de 7 korten ska finnas i MP
+//MEALPLANNER THINGS
+//select day to be able to send to addPlannerItem and so dropdown works
   String selectedDay = '';
-  final List<String> _daysOfWeek = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-  List<String> get daysOfWeek => _daysOfWeek;
   String selectTheDay(String weekday) {
     selectedDay = weekday;
     print('day is now $selectedDay');
@@ -127,13 +140,8 @@ class RecipeProvider extends ChangeNotifier {
     return selectedDay;
   }
 
-//Mealplanner things
-  void saveRecipeToMP(String chosenDay, Recipe chosenRecipe) {
-    _plannerData[addPlannerItem(chosenDay, chosenRecipe)];
-    notifyListeners();
-  }
-
-  final Map<String, Recipe?> _plannerData = {
+//local map where we store our mealplanner data
+  Map<String, Recipe?> _plannerData = {
     'Monday': null,
     'Tuesday': null,
     'Wednesday': null,
@@ -145,20 +153,33 @@ class RecipeProvider extends ChangeNotifier {
 
   Map<String, Recipe?> get plannerData => _plannerData;
 
-  addPlannerItem(String day, Recipe item) {
+//add recipe to mealplan
+  void addPlannerItem(String day, Recipe item) async {
+    await _db.addPlannerItem(day, item);
     plannerData[day] = item;
-    print(plannerData);
     notifyListeners();
   }
 
-  removePlannerItem(String day, Recipe item) {
+//remove recipe from mealplan
+  void removePlannerItem(String day) async {
+    await _db.removePlannerItem(day);
     plannerData[day] = null;
-    print(plannerData);
     notifyListeners();
   }
 
-  //Tinder card functions
-  //cardsAre used in homepage to see if there are cards to show or not
+// Fetch planner data and update local mealplan map.
+  void fetchPlannerData() async {
+    final data = await _db.getPlannerData();
+    plannerData = data;
+  }
+
+  set plannerData(Map<String, Recipe?> data) {
+    _plannerData = data;
+    notifyListeners();
+  }
+
+//TINDER CARD FUNCTITONS
+//cardsAre used in homepage to see if there are cards to show or not
   bool _cardsAre = false;
   get cardsAre => _cardsAre;
 
@@ -171,11 +192,5 @@ class RecipeProvider extends ChangeNotifier {
     _randomRecipeList.clear();
     _cardsAre = !_cardsAre;
     notifyListeners();
-  }
-
-  checkIfNull(value,
-      [String errMessage =
-          'Sorry, we could not find this information for you']) {
-    return value ?? errMessage;
   }
 }

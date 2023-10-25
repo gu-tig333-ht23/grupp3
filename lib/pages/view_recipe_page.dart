@@ -8,15 +8,16 @@ import '/util/recipe.dart';
 
 class ViewRecipePage extends StatelessWidget {
   final Recipe recipe;
-  ViewRecipePage({super.key, required this.recipe});
+
+  const ViewRecipePage({Key? key, required this.recipe}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
-        title: Text(
-          'Recipe Info',
+        backgroundColor: const Color.fromRGBO(204, 229, 134, 1.000),
+        title: const Text(
+          'RECIPE INFO',
           style: TextStyle(
             fontSize: 30,
           ),
@@ -24,10 +25,8 @@ class ViewRecipePage extends StatelessWidget {
         elevation: 0,
         actions: [
           Padding(
-            padding: EdgeInsets.all(8),
-            child:
-                //logo in corner
-                Image.asset('lib/images/avo_icon.png'),
+            padding: const EdgeInsets.all(8),
+            child: Image.asset('lib/images/avo_icon.png'), //logo in corner
           ),
         ],
       ),
@@ -36,14 +35,17 @@ class ViewRecipePage extends StatelessWidget {
   }
 }
 
-class ViewRecipe extends StatelessWidget {
-  const ViewRecipe({
-    super.key,
-    required this.recipe,
-  });
-
+class ViewRecipe extends StatefulWidget {
   final Recipe recipe;
 
+  const ViewRecipe({Key? key, required this.recipe}) : super(key: key);
+
+  @override
+  _ViewRecipeState createState() => _ViewRecipeState();
+}
+
+class _ViewRecipeState extends State<ViewRecipe> {
+  //for ingredients and diets
   String capitalizeFirstLetterOfEachWord(String text) {
     return text
         .split(' ')
@@ -52,12 +54,20 @@ class ViewRecipe extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final recipeProvider = context.read<RecipeProvider>();
+    //to make checkboxes unchecked at first
+    recipeProvider.initializeCheckboxStates(
+        recipeProvider.selectedRecipeInfo.ingredientsName.length);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    bool checkBoxChecked = false;
     RecipeInfo? recipeInfo = context.watch<RecipeProvider>().selectedRecipeInfo;
     final rp = Provider.of<RecipeProvider>(context);
+
     return SingleChildScrollView(
-      //so that the page is scrollable
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -68,110 +78,114 @@ class ViewRecipe extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Image.network(
-                    recipe.image,
+                    widget.recipe.image,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
-              //RECIPE TITLE
+              //TITLE
               Text(
-                recipe.title,
+                widget.recipe.title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              //COOK TIME
+              //COOKTIME
               Text(
-                'Cook time: ${recipeInfo!.cookTime} minutes',
-                style: TextStyle(fontSize: 16),
+                'Cook time: ${recipeInfo.cookTime} minutes',
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),
-          //DIET
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          //DIETS
+          if (recipeInfo.diets.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'DIETS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               children: [
-                if (recipeInfo.diets.isNotEmpty) ...[
-                  //so that the other recipe info still shows if there is no explicit diet
-                  Text('DIETS',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  SizedBox(
-                    height: 50,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      capitalizeFirstLetterOfEachWord(
+                          rp.formatDiets(recipeInfo.diets)),
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          //INGREDIENTS
+          if (recipeInfo.ingredientsName.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'INGREDIENTS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              children: <Widget>[
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: recipeInfo.ingredientsName.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: Checkbox(
+                        value: rp.checkboxStates[index],
+                        onChanged: (value) {
+                          rp.setCheckboxState(index, value!);
+                        },
+                      ),
+                      title: Text(
                         capitalizeFirstLetterOfEachWord(
-                            rp.formatDiets(recipeInfo.diets)),
-                        style: TextStyle(fontSize: 15),
+                            rp.checkIfNull(recipeInfo.ingredientsName[index])),
+                      ),
+                      trailing: Text(
+                        rp.getFormattedIngredient(
+                            recipeInfo.ingredientDetails[index]),
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          //INSTRUCTIONS
+          if (recipeInfo.instructions.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'INSTRUCTIONS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      rp.checkIfNull(
+                        rp.removeHtmlTags(recipeInfo.instructions),
                       ),
                     ),
                   ),
-                ],
-              ],
-            ),
-          ),
-          //INGREDIENTS
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'INGREDIENTS',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 230,
-                  child: ListView.builder(
-                      shrinkWrap: true, //makes it scrollable
-                      itemCount: recipeInfo.ingredientsName.length,
-                      itemBuilder: (context, index) {
-                        var onChanged;
-                        return ListTile(
-                          //checkbox is not done yet if we want to be able to actually check the boxes
-                          leading: Checkbox(
-                              value: checkBoxChecked, onChanged: onChanged),
-                          title: Text(
-                            capitalizeFirstLetterOfEachWord(rp.checkIfNull(
-                                recipeInfo.ingredientsName[index])),
-                          ),
-                        );
-                      }),
-                )
-              ],
-            ),
-          ),
-          //INSTRUCTIONS
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('INSTRUCTIONS',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
-                //funcion from provider ensures there are no weird icons in instructions.
-                Text(
-                  rp.checkIfNull(
-                    rp.removeHtmlTags(recipeInfo.instructions),
-                  ),
                 ),
               ],
             ),
-          ),
-          SizedBox(
+          //so that the last of the instructions don't get obscured
+          const SizedBox(
             height: 50,
           ),
         ],
