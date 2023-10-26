@@ -12,7 +12,7 @@ import '/util/recipe_info.dart';
 const String ENDPOINTrandom =
     'https://api.spoonacular.com/recipes/complexSearch';
 const String ENDPOINTing = 'https://api.spoonacular.com/recipes';
-const String apiKey = 'd5d1ef4b65e24b1798f732f1798213da';
+const String apiKey = 'e47fbe5acc954d6d8825bdecad67c254';
 
 class RecipeApi {
   static Future<List<Recipe>> getRandomRecipes(
@@ -81,11 +81,23 @@ class RecipeApi {
     String diet =
         obj['diets'] != null && obj['diets'].isNotEmpty ? obj['diets'][0] : '';
 
+    // Create a list to store ingredient details with metric unitShort and amount
+    List<Map<String, String>> ingredientDetails =
+        (obj['extendedIngredients'] as List).map((ingredient) {
+      final metric = ingredient['measures']['metric'];
+      return {
+        'unitShort': metric['unitShort'] as String,
+        'amount': metric['amount'].toString(),
+      };
+    }).toList();
+
     RecipeInfo recipeInfo = RecipeInfo(
       ingredientsName: ingredientsNames,
       cookTime: obj['readyInMinutes'] ?? 0,
       diets: diet,
       instructions: obj['instructions'] ?? '',
+      // Include the ingredient details in the RecipeInfo
+      ingredientDetails: ingredientDetails,
     );
 
     print('hej instansering klar.');

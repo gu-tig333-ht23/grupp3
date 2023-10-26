@@ -17,6 +17,17 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<bool> checkboxStates = [];
+
+  void setCheckboxState(int index, bool value) {
+    checkboxStates[index] = value;
+    notifyListeners();
+  }
+
+  void initializeCheckboxStates(int length) {
+    checkboxStates = List.generate(length, (index) => false);
+  }
+
   //recepten vi sparat
   List<Recipe> _myRecipeList = [];
 
@@ -71,6 +82,13 @@ class RecipeProvider extends ChangeNotifier {
   late RecipeInfo _selectedRecipeInfo;
   RecipeInfo get selectedRecipeInfo => _selectedRecipeInfo;
 
+  String getFormattedIngredient(Map<String, String> ingredient) {
+    final amount = ingredient['amount'];
+    final unitShort = ingredient['unitShort'];
+
+    return '$amount $unitShort';
+  }
+
   // Remove weird tokens from the instructions from api
   String removeHtmlTags(String htmlText) {
     // Check if the string contains the specific tokens
@@ -112,22 +130,8 @@ class RecipeProvider extends ChangeNotifier {
     return value ?? errMessage;
   }
 
-//används denna????
-  // String getImage(recipe) {
-  //   return recipe.image;
-  // }
-
 //MEALPLANNER THINGS
-  // final List<String> _daysOfWeek = [
-  //   'Monday',
-  //   'Tuesday',
-  //   'Wednesday',
-  //   'Thursday',
-  //   'Friday',
-  //   'Saturday',
-  //   'Sunday',
-  // ];
-  //List<String> get daysOfWeek => _daysOfWeek;
+//select day to be able to send to addPlannerItem and so dropdown works
   String selectedDay = '';
   String selectTheDay(String weekday) {
     selectedDay = weekday;
@@ -136,6 +140,7 @@ class RecipeProvider extends ChangeNotifier {
     return selectedDay;
   }
 
+//local map where we store our mealplanner data
   Map<String, Recipe?> _plannerData = {
     'Monday': null,
     'Tuesday': null,
@@ -150,11 +155,8 @@ class RecipeProvider extends ChangeNotifier {
 
 //add recipe to mealplan
   void addPlannerItem(String day, Recipe item) async {
-    print('add planner item clicked probably');
     await _db.addPlannerItem(day, item);
-    print('recipe should be added to mealplan DB');
     plannerData[day] = item;
-    print('recipe is added in local mealplan map');
     notifyListeners();
   }
 

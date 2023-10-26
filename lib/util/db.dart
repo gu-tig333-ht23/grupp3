@@ -58,7 +58,6 @@ class DB {
 //get recipes in a list
   Future<List<Recipe>> getRecipes() async {
     List<Map<String, dynamic>> results = await _db!.query(TABLE_RECIPES);
-    print(results);
     return results.map((result) => Recipe.fromMap(result)).toList();
   }
 

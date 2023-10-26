@@ -13,7 +13,6 @@ class RecipeTile extends StatelessWidget {
   void _showPopup(BuildContext context) {
     final pp = Provider.of<RecipeProvider>(context, listen: false);
     String selectedDay = pp.plannerData.keys.first;
-    //int chosenDay = pp.weekDays.values.first;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -27,6 +26,7 @@ class RecipeTile extends StatelessWidget {
                   Container(
                     color: Colors.white,
                     padding: EdgeInsets.only(left: 6, right: 6),
+                    //DROPDOWN MENU
                     child: Consumer<RecipeProvider>(
                       builder: (context, value, child) => DropdownButton(
                         value: selectedDay,
@@ -40,7 +40,6 @@ class RecipeTile extends StatelessWidget {
                           if (newValue != null) {
                             setState(() {
                               selectedDay = newValue;
-                              //chosenDay = value.weekDays[selectedDay] ?? 0;
                             });
                           }
                         },
@@ -55,9 +54,6 @@ class RecipeTile extends StatelessWidget {
                       Consumer<RecipeProvider>(
                         builder: (context, value, child) => ElevatedButton(
                           onPressed: () {
-                            print(
-                                '$recipe is going to be saved to $selectedDay');
-                            //print(chosenDay);
                             pp.addPlannerItem(selectedDay, recipe);
                             Navigator.of(context).pop();
                           },
@@ -120,8 +116,9 @@ class RecipeTile extends StatelessWidget {
                   Consumer<RecipeProvider>(
                     builder: (context, value, child) => ElevatedButton(
                       onPressed: () async {
-                        //add function to get recpieinfo
+                        //to set the recipe id correctly in provider
                         context.read<RecipeProvider>().chooseRecipeID(recipe);
+                        //fetch ingredients from api
                         await context
                             .read<RecipeProvider>()
                             .fetchIngredientsFromApi();
@@ -173,7 +170,7 @@ class RecipeTile extends StatelessWidget {
                             opacity: 0.7)),
                   ),
                   Positioned(
-                    //BUTTTON
+                    //REMOVE BUTTTON
                     right: 0,
                     child: ElevatedButton(
                       onPressed: () {

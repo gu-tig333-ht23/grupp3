@@ -42,6 +42,7 @@ class ViewMealPlannerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RecipeProvider>(
       builder: (context, value, child) => ListView.builder(
+        padding: const EdgeInsets.only(bottom: 11.0),
         itemCount: value.plannerData.length,
         itemBuilder: (context, index) {
           final dayOfWeek = value.plannerData.keys.elementAt(index);

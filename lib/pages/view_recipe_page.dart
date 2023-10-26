@@ -9,14 +9,14 @@ import '/util/recipe.dart';
 class ViewRecipePage extends StatelessWidget {
   final Recipe recipe;
 
-  ViewRecipePage({Key? key, required this.recipe}) : super(key: key);
+  const ViewRecipePage({Key? key, required this.recipe}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
-        title: Text(
+        backgroundColor: const Color.fromRGBO(204, 229, 134, 1.000),
+        title: const Text(
           'RECIPE INFO',
           style: TextStyle(
             fontSize: 30,
@@ -25,7 +25,7 @@ class ViewRecipePage extends StatelessWidget {
         elevation: 0,
         actions: [
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Image.asset('lib/images/avo_icon.png'), //logo in corner
           ),
         ],
@@ -38,33 +38,28 @@ class ViewRecipePage extends StatelessWidget {
 class ViewRecipe extends StatefulWidget {
   final Recipe recipe;
 
-  ViewRecipe({Key? key, required this.recipe}) : super(key: key);
+  const ViewRecipe({Key? key, required this.recipe}) : super(key: key);
 
   @override
   _ViewRecipeState createState() => _ViewRecipeState();
 }
 
 class _ViewRecipeState extends State<ViewRecipe> {
-  late List<bool> _checkboxStates;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkboxStates = List.generate(
-        context
-                .read<RecipeProvider>()
-                .selectedRecipeInfo
-                .ingredientsName
-                .length ??
-            0,
-        (index) => false);
-  }
-
+  //for ingredients and diets
   String capitalizeFirstLetterOfEachWord(String text) {
     return text
         .split(' ')
         .map((word) => word[0].toUpperCase() + word.substring(1))
         .join(' ');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final recipeProvider = context.read<RecipeProvider>();
+    //to make checkboxes unchecked at first
+    recipeProvider.initializeCheckboxStates(
+        recipeProvider.selectedRecipeInfo.ingredientsName.length);
   }
 
   @override
@@ -87,30 +82,33 @@ class _ViewRecipeState extends State<ViewRecipe> {
                   ),
                 ),
               ),
+              //TITLE
               Text(
                 widget.recipe.title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              //COOKTIME
               Text(
                 'Cook time: ${recipeInfo.cookTime} minutes',
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),
-          ExpansionTile(
-            title: Text(
-              'DIETS',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          //DIETS
+          if (recipeInfo.diets.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'DIETS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            children: [
-              if (recipeInfo.diets.isNotEmpty) ...[
+              children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
@@ -118,9 +116,46 @@ class _ViewRecipeState extends State<ViewRecipe> {
                     child: Text(
                       capitalizeFirstLetterOfEachWord(
                           rp.formatDiets(recipeInfo.diets)),
-                      style: TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 15),
                     ),
                   ),
+                ),
+              ],
+            ),
+          //INGREDIENTS
+          if (recipeInfo.ingredientsName.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'INGREDIENTS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              children: <Widget>[
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: recipeInfo.ingredientsName.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: Checkbox(
+                        value: rp.checkboxStates[index],
+                        onChanged: (value) {
+                          rp.setCheckboxState(index, value!);
+                        },
+                      ),
+                      title: Text(
+                        capitalizeFirstLetterOfEachWord(
+                            rp.checkIfNull(recipeInfo.ingredientsName[index])),
+                      ),
+                      trailing: Text(
+                        rp.getFormattedIngredient(
+                            recipeInfo.ingredientDetails[index]),
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    );
+                  },
                 ),
               ],
             ],
@@ -133,53 +168,32 @@ class _ViewRecipeState extends State<ViewRecipe> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            children: <Widget>[
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: recipeInfo.ingredientsName.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Checkbox(
-                      value: _checkboxStates[index],
-                      onChanged: (value) {
-                        setState(() {
-                          _checkboxStates[index] = value!;
-                        });
-                      },
-                    ),
-                    title: Text(
-                      capitalizeFirstLetterOfEachWord(
-                          rp.checkIfNull(recipeInfo.ingredientsName[index])),
-                    ),
-                  );
-                },
+          //INSTRUCTIONS
+          if (recipeInfo.instructions.isNotEmpty)
+            ExpansionTile(
+              title: const Text(
+                'INSTRUCTIONS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ],
-          ),
-          ExpansionTile(
-            title: Text(
-              'INSTRUCTIONS',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    rp.checkIfNull(
-                      rp.removeHtmlTags(recipeInfo.instructions),
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      rp.checkIfNull(
+                        rp.removeHtmlTags(recipeInfo.instructions),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
+              ],
+            ),
+          //so that the last of the instructions don't get obscured
+          const SizedBox(
             height: 50,
           ),
         ],
