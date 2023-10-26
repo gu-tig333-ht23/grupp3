@@ -73,7 +73,6 @@ class _ViewRecipeState extends State<ViewRecipe> {
         children: [
           Column(
             children: [
-              //IMAGE
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -159,6 +158,15 @@ class _ViewRecipeState extends State<ViewRecipe> {
                   },
                 ),
               ],
+            ],
+          ),
+          ExpansionTile(
+            title: Text(
+              'INGREDIENTS',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           //INSTRUCTIONS
           if (recipeInfo.instructions.isNotEmpty)
