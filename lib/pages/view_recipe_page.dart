@@ -45,34 +45,42 @@ class ViewRecipe extends StatefulWidget {
 }
 
 class _ViewRecipeState extends State<ViewRecipe> {
-  //for ingredients and diets
+  //function to format the text in diets & ingredient names.
   String capitalizeFirstLetterOfEachWord(String text) {
     return text
-        .split(' ')
-        .map((word) => word[0].toUpperCase() + word.substring(1))
-        .join(' ');
+        .split(' ') //splits input text based on spaces
+        .map((word) =>
+            word[0].toUpperCase() +
+            word.substring(1)) //to capitalize only the first letter
+        .join(
+            ' '); //rejoins modified words into single string using space as separator
   }
 
   @override
   void initState() {
     super.initState();
     final recipeProvider = context.read<RecipeProvider>();
-    //to make checkboxes unchecked at first
-    recipeProvider.initializeCheckboxStates(
-        recipeProvider.selectedRecipeInfo.ingredientsName.length);
+    //context.read directly queries the context for the provider but returns null if it's not found.
+    int ingredientCount = recipeProvider.selectedRecipeInfo.ingredientsName
+        .length; //how many ingredients there are
+    recipeProvider
+        .initializeCheckboxStates(ingredientCount); //checkboxes are not checked
   }
 
   @override
   Widget build(BuildContext context) {
     RecipeInfo? recipeInfo = context.watch<RecipeProvider>().selectedRecipeInfo;
     final rp = Provider.of<RecipeProvider>(context);
+    //Provider.of traverses the widget tree to find the provider but may throw an error if the provider is not available.
 
     return SingleChildScrollView(
+      //to make page scrollable
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             children: [
+              //IMAGE
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -98,8 +106,8 @@ class _ViewRecipeState extends State<ViewRecipe> {
               ),
             ],
           ),
-          //DIETS
-          if (recipeInfo.diets.isNotEmpty)
+          //DIET
+          if (recipeInfo.diets.isNotEmpty) //only shows if there are diets
             ExpansionTile(
               title: const Text(
                 'DIETS',
@@ -134,39 +142,35 @@ class _ViewRecipeState extends State<ViewRecipe> {
               ),
               children: <Widget>[
                 ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
+                  physics:
+                      const NeverScrollableScrollPhysics(), //Creates scroll physics that does not let the user scroll.
+                  shrinkWrap:
+                      true, //allows listview to be as tall as it's content
                   itemCount: recipeInfo.ingredientsName.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+                      //change checkboxes
                       leading: Checkbox(
                         value: rp.checkboxStates[index],
                         onChanged: (value) {
                           rp.setCheckboxState(index, value!);
                         },
                       ),
+                      //ingredient names
                       title: Text(
                         capitalizeFirstLetterOfEachWord(
                             rp.checkIfNull(recipeInfo.ingredientsName[index])),
                       ),
+                      //ingredient amounts
                       trailing: Text(
-                        rp.getFormattedIngredient(
-                            recipeInfo.ingredientDetails[index]),
-                        style: TextStyle(fontSize: 14),
+                        rp.getFormattedIngredient(recipeInfo.ingredientDetails[
+                            index]), //provider formats ingredients in order
+                        style: const TextStyle(fontSize: 14),
                       ),
                     );
                   },
                 ),
               ],
-            ],
-          ),
-          ExpansionTile(
-            title: Text(
-              'INGREDIENTS',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
             ),
           //INSTRUCTIONS
           if (recipeInfo.instructions.isNotEmpty)
@@ -184,6 +188,7 @@ class _ViewRecipeState extends State<ViewRecipe> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
+                      //provider checks if text is null and then removes ugly tags
                       rp.checkIfNull(
                         rp.removeHtmlTags(recipeInfo.instructions),
                       ),
@@ -192,7 +197,7 @@ class _ViewRecipeState extends State<ViewRecipe> {
                 ),
               ],
             ),
-          //so that the last of the instructions don't get obscured
+          //so that end of text isn't covered up
           const SizedBox(
             height: 50,
           ),

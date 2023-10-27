@@ -8,8 +8,20 @@ import 'db.dart';
 
 class RecipeProvider extends ChangeNotifier {
   //DB
+  //connect to database
   final DB _db;
   RecipeProvider(DB db) : _db = db;
+
+  // Fetch recipe from API
+  void fetchRandomRecipes() async {
+    List<Recipe>? recipes = await RecipeApi.getRandomRecipes();
+    _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
+    notifyListeners();
+  }
+
+  //API recipes
+  final List<Recipe> _randomRecipeList = [];
+  List<Recipe> get randomRecipeList => _randomRecipeList;
 
   //get recipes from DB
   void fetchRecipes() async {
@@ -17,18 +29,7 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<bool> checkboxStates = [];
-
-  void setCheckboxState(int index, bool value) {
-    checkboxStates[index] = value;
-    notifyListeners();
-  }
-
-  void initializeCheckboxStates(int length) {
-    checkboxStates = List.generate(length, (index) => false);
-  }
-
-  //recepten vi sparat
+  //Saved recipes
   List<Recipe> _myRecipeList = [];
 
   List<Recipe> get myRecipeList {
@@ -50,20 +51,7 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch recipe from API
-  void fetchRandomRecipes() async {
-    List<Recipe>? recipes = await RecipeApi.getRandomRecipes((message) {
-      print(message);
-    });
-    _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
-    notifyListeners();
-  }
-
-  //API recipes
-  final List<Recipe> _randomRecipeList = [];
-  List<Recipe> get randomRecipeList => _randomRecipeList;
-
-// to show correct recipe info
+// RECIPE INFO
   int recipeID = 656846;
 
   void chooseRecipeID(Recipe recipe) {
@@ -72,7 +60,6 @@ class RecipeProvider extends ChangeNotifier {
   }
 
   fetchIngredientsFromApi() async {
-    notifyListeners();
     RecipeInfo recipeInfo = await RecipeApi.getIngredients(recipeID);
     print('${recipeInfo.toString()} fetchIngredientsFromApi done');
     _selectedRecipeInfo = recipeInfo;
@@ -82,10 +69,11 @@ class RecipeProvider extends ChangeNotifier {
   late RecipeInfo _selectedRecipeInfo;
   RecipeInfo get selectedRecipeInfo => _selectedRecipeInfo;
 
+//FORMAT RECIPE INFO
+  //to get amount and unit in the correct format
   String getFormattedIngredient(Map<String, String> ingredient) {
     final amount = ingredient['amount'];
     final unitShort = ingredient['unitShort'];
-
     return '$amount $unitShort';
   }
 
@@ -124,10 +112,23 @@ class RecipeProvider extends ChangeNotifier {
     return formattedDietList.join('\n');
   }
 
+  //check if a value in recipe info is empty
   checkIfNull(value,
       [String errMessage =
           'Sorry, we could not find this information for you']) {
     return value ?? errMessage;
+  }
+
+//checkbox for inngredients
+  List<bool> checkboxStates = [];
+
+  void setCheckboxState(int index, bool value) {
+    checkboxStates[index] = value;
+    notifyListeners();
+  }
+
+  void initializeCheckboxStates(int length) {
+    checkboxStates = List.generate(length, (index) => false);
   }
 
 //MEALPLANNER THINGS
@@ -135,7 +136,6 @@ class RecipeProvider extends ChangeNotifier {
   String selectedDay = '';
   String selectTheDay(String weekday) {
     selectedDay = weekday;
-    print('day is now $selectedDay');
     notifyListeners();
     return selectedDay;
   }

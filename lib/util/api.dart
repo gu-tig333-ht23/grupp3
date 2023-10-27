@@ -3,34 +3,44 @@
 //Emy f20028b02395416fbe1af1d72d9cb4ee
 //Amanda d5d1ef4b65e24b1798f732f1798213da
 //Agge e47fbe5acc954d6d8825bdecad67c254
+//Lovisa 2f568241733441ca8901a6e839573ef8
+//Rebecca 2ffc22b83a6b49dabcb750e6acaaa2fe
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import '/util/recipe.dart';
 import '/util/recipe_info.dart';
 
+//url for random recipes
 const String ENDPOINTrandom =
     'https://api.spoonacular.com/recipes/complexSearch';
+//url for ingredients for a specific recipe
 const String ENDPOINTing = 'https://api.spoonacular.com/recipes';
-const String apiKey = 'e47fbe5acc954d6d8825bdecad67c254';
+//our api key
+const String apiKey = '2ffc22b83a6b49dabcb750e6acaaa2fe';
 
 class RecipeApi {
-  static Future<List<Recipe>> getRandomRecipes(
-      void Function(String) snackis) async {
+  //GET RANDOM RECIPES
+  static Future<List<Recipe>> getRandomRecipes() async {
+    //url used to request random recipes from API
     Uri url = Uri.parse('$ENDPOINTrandom?sort=random&apiKey=$apiKey');
-
+    //request will be using json data
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
+      //what we get from url is stored in response
       var response = await http.get(url, headers: headers);
+      //data is decoded response
       Map<String, dynamic> data = json.decode(response.body);
 
+      //exception - no recipes found
       if (data['results'] == null || data['results'].isEmpty) {
         throw Exception('No recipes found in the API response.');
       }
 
+      //creates recipe object from data
       Recipe recipefromAPI = Recipe.fromMap(data['results'][0]);
       Recipe recipe = Recipe(
         id: recipefromAPI.id,
@@ -38,37 +48,34 @@ class RecipeApi {
         image: recipefromAPI.image,
       );
 
-      print(recipe.title);
+      print(recipe.title); //to check so that api works correctly
 
+      //maps list of Recipe objects to be returned
       List<Recipe> recipes =
           data['results'].map<Recipe>((item) => Recipe.fromMap(item)).toList();
       return recipes;
     } catch (err) {
-      if (err.toString().contains('API rate limit exceeded')) {
-        // Display an error message for API rate limit exceeded
-        snackis('API rate limit exceeded. Please try again later.');
-      } else {
-        // Handle other errors as needed
-        print('Error: $err');
-      }
-      return []; // or throw the error further
+      throw err.toString(); //prints out error
     }
   }
 
+  //GET RECIPE INGREDIENTS
   static Future<RecipeInfo> getIngredients(int recipeId) async {
+    //url used to request recipe info from API for a specifc recipID
     Uri url1 = Uri.parse('$ENDPOINTing/$recipeId/information?apiKey=$apiKey');
 
-    print('hej vi har endpoint');
+    //request will be using json data
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
+    //what we get from url is stored in response
     var response = await http.get(url1, headers: headers);
+    //data is decoded response
     Map<String, dynamic> obj = json.decode(response.body);
-    print('hej decode klart');
 
     List<String> ingredientsNames = [];
-
+    //if data exists, extract ingredient names and store in list
     if (obj['extendedIngredients'] != null) {
       ingredientsNames = (obj['extendedIngredients'] as List)
           .map((ingredient) => ingredient['nameClean'] as String? ?? "")
@@ -78,6 +85,7 @@ class RecipeApi {
       print('error');
     }
 
+    //check if diet is empty, if it is diets = '';
     String diet =
         obj['diets'] != null && obj['diets'].isNotEmpty ? obj['diets'][0] : '';
 
@@ -91,16 +99,15 @@ class RecipeApi {
       };
     }).toList();
 
+    //creates recipeInfo object from data to be returned
     RecipeInfo recipeInfo = RecipeInfo(
       ingredientsName: ingredientsNames,
-      cookTime: obj['readyInMinutes'] ?? 0,
+      cookTime: obj['readyInMinutes'] ?? 0, //0 if it's empty
       diets: diet,
-      instructions: obj['instructions'] ?? '',
-      // Include the ingredient details in the RecipeInfo
+      instructions:
+          obj['instructions'] ?? '', //empty string if no instructions available
       ingredientDetails: ingredientDetails,
     );
-
-    print('hej instansering klar.');
 
     return recipeInfo;
   }

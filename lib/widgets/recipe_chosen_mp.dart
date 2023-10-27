@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 //INSIDE OF MEALPLANNER TILE, RECIPE IS CHOSEN
 class RecipeChosenMP extends StatelessWidget {
   final String dayOfWeek;
-  final Recipe? recipe;
+  final Recipe recipe;
   const RecipeChosenMP(
       {super.key, required this.recipe, required this.dayOfWeek});
 
@@ -32,7 +32,7 @@ class RecipeChosenMP extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color: Colors.brown,
               image: DecorationImage(
-                image: NetworkImage(recipe!.image.toString()),
+                image: NetworkImage(recipe.image.toString()),
                 fit: BoxFit.cover,
                 opacity: 0.6,
               ),
@@ -40,7 +40,7 @@ class RecipeChosenMP extends StatelessWidget {
             //TITLE
             child: Center(
               child: Text(
-                recipe!.title,
+                recipe.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
@@ -51,15 +51,24 @@ class RecipeChosenMP extends StatelessWidget {
             ),
           ),
           //NAVIGATE TO VIEWRECIPE PAGE WHEN IMAGE/TITLE IS CLICKED
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            //to set the recipe id correctly in provider
+            context.read<RecipeProvider>().chooseRecipeID(recipe);
+            // //fetch ingredients from api
+            await context.read<RecipeProvider>().fetchIngredientsFromApi();
+            //go to view recipe page
+            // ignore: use_build_context_synchronously
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return ViewRecipePage(recipe: recipe!);
+                  return ViewRecipePage(recipe: recipe);
                 },
               ),
             );
+          },
+          onDoubleTap: () {
+            //emtpy to prevent several API requests at once.
           },
         ),
         //REMOVE RECIPE FROM MEALPLANNER

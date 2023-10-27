@@ -29,6 +29,7 @@ class TinderCard extends StatelessWidget {
     }
 
     return Consumer<RecipeProvider>(
+      //consumer to get recipes from provider
       builder: (context, value, child) => AppinioSwiper(
         swipeOptions: AppinioSwipeOptions.only(left: true, right: true),
         controller: swipecontroller,
@@ -76,7 +77,8 @@ class TinderCard extends StatelessWidget {
                               topLeft: Radius.circular(12),
                               topRight: Radius.circular(12),
                             ),
-                            color: Color.fromRGBO(204, 229, 134, 1.000),
+                            color: Color.fromRGBO(204, 229, 134,
+                                1.000), //if there's no image it's just green
                             image: DecorationImage(
                               //image from API
                               image: NetworkImage(
@@ -185,7 +187,8 @@ class TinderCard extends StatelessWidget {
         snackis('Recipe is already saved in My Recipes');
       }
     } else {
-      //SWIPE LEFT: RECIPE IS PUSHED AWAY
+      //SWIPE LEFT: RECIPE IS PUSHED AWAY, nothing happens
+      print('You swiped ${direction.name}');
     }
   }
 }

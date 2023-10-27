@@ -4,6 +4,7 @@ import 'package:mealmate/util/recipe.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DB {
+  //names for tables
   static const String TABLE_RECIPES = 'recipes';
   static const String TABLE_PLANNER = 'mealplan';
   Database? _db;
@@ -11,25 +12,26 @@ class DB {
 
 //TO INITIALIZE DATABASE
   Future<void> init() async {
-    var databasesPath = getDatabasesPath();
+    var databasesPath = getDatabasesPath(); //default database location
     var dbfilename = 'mealmate2.db';
     _db = await openDatabase(
+      //opens the database when opening app
       '$databasesPath/$dbfilename',
 
       //CREATE TABLES 1ST TIME EVER OPENING THE APP
       onCreate: (db, version) {
-        //RECIPE TABLE
+        //RECIPE TABLE, stores id, title and image
         db.execute('''CREATE TABLE $TABLE_RECIPES 
         (
           id INTEGER PRIMARY KEY,
           title TEXT,
           image TEXT
           )''');
-        //MEALPLAN TABLE
+        //MEALPLAN TABLE, foreign key to connect a recipe to mealplan day
         db.execute(''' CREATE TABLE $TABLE_PLANNER (
             day TEXT PRIMARY KEY,
             recipe_id INTEGER NULL,
-            FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+            FOREIGN KEY (recipe_id) REFERENCES recipes(id) 
           )
         ''');
         // To make sure mealplan table is not empty of days upon creation
@@ -77,10 +79,13 @@ class DB {
   Future<void> addPlannerItem(String day, Recipe item) async {
     final db = _db;
     if (db != null) {
+      //database must exist
+      //existingRows gets days and recipes and knows if they are empty or not
       final existingRows =
           await db.query('$TABLE_PLANNER', where: 'day = ?', whereArgs: [day]);
 
       if (existingRows.isNotEmpty) {
+        //standard, days should always exist
         // Update the existing row with the new recipe
         await db.update(
             '$TABLE_PLANNER',
@@ -111,27 +116,34 @@ class DB {
 //get mealplan data to be able to show in _plannerData in provider
   Future<Map<String, Recipe?>> getPlannerData() async {
     final db = _db;
-    final result = await db!.query('$TABLE_PLANNER'); //what we have in DB
-    final plannerData = Map<String, Recipe?>();
+    final result = await db!
+        .query('$TABLE_PLANNER'); //what we have in DB, stored in result
+    final plannerData = Map<String, Recipe?>(); //how we access the info
 
     for (var data in result) {
+      //iterates through the result list, processing each row in the MP table,
+      //local varaibles to make it easier
       final day = data['day'] as String;
       final recipeId = data['recipe_id'] as int?;
 
       if (recipeId != null) {
+        //if there is a recipe ID
+        //get other recipe info from recipe table
         final recipeResult = await db
             .query('$TABLE_RECIPES', where: 'id = ?', whereArgs: [recipeId]);
 
         if (recipeResult.isNotEmpty) {
+          //if the recipe is saved in recipe table
           final recipe = Recipe.fromMap(recipeResult.first);
-          plannerData[day] = recipe;
+          plannerData[day] =
+              recipe; //recipe (object) is shown for the chosen day
         } else {
-          plannerData[day] = null;
+          plannerData[day] = null; //recipe can't be accessed
         }
       } else {
-        plannerData[day] = null;
+        plannerData[day] = null; //there is no recipe for that day
       }
     }
-    return plannerData;
+    return plannerData; //so that we can show the data
   }
 }

@@ -9,6 +9,7 @@ class Recipe {
     required this.image,
   });
 
+//necessary for database
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -17,6 +18,7 @@ class Recipe {
     };
   }
 
+//takes a map and converts it to a Recipe object.
   factory Recipe.fromMap(Map<String, dynamic> data) {
     return Recipe(
       id: data['id'],

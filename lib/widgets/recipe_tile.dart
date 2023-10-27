@@ -10,6 +10,7 @@ class RecipeTile extends StatelessWidget {
   final Recipe recipe;
   RecipeTile({super.key, required this.recipe});
 
+  //POP UP WINDOW TO ADD TO MEALPLAN
   void _showPopup(BuildContext context) {
     final pp = Provider.of<RecipeProvider>(context, listen: false);
     String selectedDay = pp.plannerData.keys.first;
@@ -29,8 +30,9 @@ class RecipeTile extends StatelessWidget {
                     //DROPDOWN MENU
                     child: Consumer<RecipeProvider>(
                       builder: (context, value, child) => DropdownButton(
-                        value: selectedDay,
+                        value: selectedDay, //selectedDay used for buttons later
                         items: value.plannerData.keys.map((String day) {
+                          //days in plannerData in provider
                           return DropdownMenuItem(
                             value: day,
                             child: Text(day),
@@ -39,7 +41,7 @@ class RecipeTile extends StatelessWidget {
                         onChanged: (String? newValue) {
                           if (newValue != null) {
                             setState(() {
-                              selectedDay = newValue;
+                              selectedDay = newValue; //change the chosen day
                             });
                           }
                         },

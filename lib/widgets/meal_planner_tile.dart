@@ -91,7 +91,7 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
   return isRecipeChosen
       //RECIPE CHOSEN
       ? RecipeChosenMP(
-          recipe: recipe,
+          recipe: recipe!,
           dayOfWeek: dayOfWeek,
         )
       //NO RECIPE IS CHOSEN
@@ -106,7 +106,7 @@ Widget showRecipeOrNot(bool isRecipeChosen, String dayOfWeek, Recipe? recipe,
             SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => MyRecipesPage()));
               },
               icon: Icon(Icons.add),

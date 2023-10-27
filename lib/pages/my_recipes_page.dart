@@ -35,6 +35,7 @@ class MyRecipesPage extends StatelessWidget {
   }
 }
 
+//body of MyRecipesPage
 class ViewMyRecipes extends StatelessWidget {
   const ViewMyRecipes({super.key});
 

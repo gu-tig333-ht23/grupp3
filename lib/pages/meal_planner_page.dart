@@ -45,7 +45,7 @@ class ViewMealPlannerTile extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 11.0),
         itemCount: value.plannerData.length,
         itemBuilder: (context, index) {
-          final dayOfWeek = value.plannerData.keys.elementAt(index);
+          final dayOfWeek = value.plannerData.keys.elementAt(index); //'Monday'
           final recipe = value.plannerData[dayOfWeek];
 
           return recipe != null

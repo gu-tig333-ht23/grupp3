@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../widgets/tinder_card.dart';
 import 'package:provider/provider.dart';
-import '../util/api.dart';
 import '../util/recipe_provider.dart';
 import '../widgets/empty_cards.dart';
 import '../widgets/nav_drawer.dart';
@@ -18,9 +17,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(204, 229, 134, 1.000),
+        backgroundColor: const Color.fromRGBO(204, 229, 134, 1.000),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'M E A L M A T E',
           style: TextStyle(
             fontSize: 28,
@@ -29,14 +28,14 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         actions: [
           Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child:
                   //logo button, shows alert dialog with tutorial info
                   MaterialButton(
                 onPressed: () {
                   _showTutorialDialog(context);
                 },
-                shape: CircleBorder(),
+                shape: const CircleBorder(),
                 minWidth: 0,
                 height: 50,
                 child: Image.asset('lib/images/avo_icon.png'),
@@ -45,23 +44,8 @@ class HomePage extends StatelessWidget {
       ),
       //navigation drawer
       drawer: NavDrawer(context: context),
-      body: FutureBuilder(
-        future: RecipeApi.getRandomRecipes((message) {
-          print(message);
-        }),
-        builder: ((context, snapshot) {
-          //SHOW DATA
-          if (snapshot.connectionState == ConnectionState.done) {
-            return TinderOrEmptyWidget();
-          }
-          //LOADING SCREEN
-          else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        }),
-      ),
+      //tinder cards or refresh page
+      body: TinderOrEmptyWidget(),
     );
   }
 
@@ -71,7 +55,7 @@ class HomePage extends StatelessWidget {
       builder: (context) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: AlertDialog(
+          child: const AlertDialog(
             content: Text(
                 "Hello!\n\nBegin by swiping on recipes. The recipes you like will be saved and can later be used to create a mealplan from.\n\nNavigate to different pages via the button in the top left corner."),
           ),
@@ -83,6 +67,7 @@ class HomePage extends StatelessWidget {
 
 // Decides which body to be returned
 class TinderOrEmptyWidget extends StatelessWidget {
+  //swipecontroller is sent to TinderCard();
   final AppinioSwiperController swipecontroller = AppinioSwiperController();
 
   TinderOrEmptyWidget({super.key});
@@ -92,9 +77,10 @@ class TinderOrEmptyWidget extends StatelessWidget {
     var rp = Provider.of<RecipeProvider>(context);
 
     if (rp.cardsAre == false) {
+      //if cards are not empty, show cards
       return TinderCard(swipecontroller: swipecontroller);
     } else {
-      return EmptyCards();
+      return const EmptyCards(); //cards are empty
     }
   }
 }

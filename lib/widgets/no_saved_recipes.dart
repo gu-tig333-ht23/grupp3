@@ -1,6 +1,12 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+
+//navigator.pop twice to go back to homepage via nav drawer
+void popTwice(BuildContext context) {
+  int count = 0;
+  Navigator.popUntil(context, (route) {
+    return count++ == 2;
+  });
+}
 
 class NoSavedRecipes extends StatelessWidget {
   const NoSavedRecipes({super.key});
@@ -13,27 +19,33 @@ class NoSavedRecipes extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.black, width: 2),
-                ),
-                child: const Text(
-                  'You need to swipe right on some recipes!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
+            //IMAGE
+            Image.asset('lib/images/avo_icon.png'),
+            const SizedBox(height: 16),
+            //TEXT
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "You have not saved any recipes, go swipe away!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 30,
                     color: Colors.black,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
+                    decoration: TextDecoration.none),
               ),
             ),
-            const SizedBox(height: 16),
-            Image.asset('lib/images/avo_icon.png'),
+            const SizedBox(height: 50),
+            //BUTTON back to discover recipes / homepage
+            ElevatedButton.icon(
+              onPressed: () {
+                popTwice(context);
+              },
+              icon: const Icon(Icons.image_search),
+              label: const Text(
+                'Discover recipes',
+                style: TextStyle(color: Colors.black),
+              ),
+            )
           ],
         ),
       ),

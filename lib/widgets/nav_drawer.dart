@@ -16,14 +16,14 @@ class NavDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color.fromRGBO(204, 229, 134, 1.000),
+        color: const Color.fromRGBO(204, 229, 134, 1.000),
         child: ListView(
           children: [
+            //LOGO
             DrawerHeader(
                 child: Image.asset(
               'lib/images/smaller_logo.png',
             )),
-
             //HOMEPAGE / DISCOVER RECIPES
             ListTile(
               leading: const Icon(Icons.image_search),
@@ -33,7 +33,8 @@ class NavDrawer extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => HomePage()));
+                    .pop(MaterialPageRoute(builder: (context) => HomePage()));
+                //.pop to not refresh the page, to stay on the most recent tinder card
               },
             ),
             //MEAL PLAN PAGE
@@ -44,8 +45,8 @@ class NavDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MealPlannerPage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const MealPlannerPage()));
               },
             ),
             //MY SAVED RECIPES
@@ -56,8 +57,8 @@ class NavDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MyRecipesPage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const MyRecipesPage()));
               },
             ),
           ],
