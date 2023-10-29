@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '/pages/home_page.dart';
 import '/util/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -42,8 +41,6 @@ class EmptyCards extends StatelessWidget {
                 //refresh tinder cards
                 Provider.of<RecipeProvider>(context, listen: false)
                     .refreshCards(false);
-                //go back to widget that returns the new cards
-                TinderOrEmptyWidget();
               },
             ),
           ],

@@ -14,6 +14,7 @@ class RecipeProvider extends ChangeNotifier {
 
   // Fetch recipe from API
   void fetchRandomRecipes() async {
+    _randomRecipeList.clear();
     List<Recipe>? recipes = await RecipeApi.getRandomRecipes();
     _randomRecipeList.addAll(recipes); // Add all fetched recipes to the list
     notifyListeners();
@@ -188,9 +189,8 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  refreshCards(bool isEmpty) {
-    _randomRecipeList.clear();
-    _cardsAre = !_cardsAre;
+  refreshCards(bool isNotEmpty) {
+    _cardsAre = isNotEmpty;
     notifyListeners();
   }
 }
