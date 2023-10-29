@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-//navigator.pop twice to go back to homepage via nav drawer
-void popTwice(BuildContext context) {
-  int count = 0;
-  Navigator.popUntil(context, (route) {
-    return count++ == 2;
-  });
+//This function pops the user back until the home page is reached
+void popToHomePage(BuildContext context) {
+  while (Navigator.canPop(context)) {
+    Navigator.pop(context);
+  }
 }
 
 class NoSavedRecipes extends StatelessWidget {
@@ -35,10 +34,10 @@ class NoSavedRecipes extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            //BUTTON back to discover recipes / homepage
+            //BUTTON (that pops the user back until the homepage is reached)
             ElevatedButton.icon(
               onPressed: () {
-                popTwice(context);
+                popToHomePage(context);
               },
               icon: const Icon(Icons.image_search),
               label: const Text(
