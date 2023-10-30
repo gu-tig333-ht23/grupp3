@@ -186,9 +186,6 @@ class TinderCard extends StatelessWidget {
         //RECIPE IS SAVED
         snackis('Recipe is already saved in My Recipes');
       }
-    } else {
-      //SWIPE LEFT: RECIPE IS PUSHED AWAY, nothing happens
-      print('You swiped ${direction.name}');
     }
   }
 }

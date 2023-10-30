@@ -53,22 +53,15 @@ class RecipeProvider extends ChangeNotifier {
   }
 
 // RECIPE INFO
-  int recipeID = 656846;
+  late RecipeInfo _selectedRecipeInfo;
+  RecipeInfo get selectedRecipeInfo => _selectedRecipeInfo;
 
-  void chooseRecipeID(Recipe recipe) {
-    recipeID = recipe.id;
-    notifyListeners();
-  }
-
-  fetchIngredientsFromApi() async {
-    RecipeInfo recipeInfo = await RecipeApi.getIngredients(recipeID);
+  fetchIngredientsFromApi(Recipe recipe) async {
+    RecipeInfo recipeInfo = await RecipeApi.getIngredients(recipe.id);
     print('${recipeInfo.toString()} fetchIngredientsFromApi done');
     _selectedRecipeInfo = recipeInfo;
     notifyListeners();
   }
-
-  late RecipeInfo _selectedRecipeInfo;
-  RecipeInfo get selectedRecipeInfo => _selectedRecipeInfo;
 
 //FORMAT RECIPE INFO
   //to get amount and unit in the correct format

@@ -40,16 +40,6 @@ class RecipeApi {
         throw Exception('No recipes found in the API response.');
       }
 
-      //creates recipe object from data
-      Recipe recipefromAPI = Recipe.fromMap(data['results'][0]);
-      Recipe recipe = Recipe(
-        id: recipefromAPI.id,
-        title: recipefromAPI.title,
-        image: recipefromAPI.image,
-      );
-
-      print(recipe.title); //to check so that api works correctly
-
       //maps list of Recipe objects to be returned
       List<Recipe> recipes =
           data['results'].map<Recipe>((item) => Recipe.fromMap(item)).toList();

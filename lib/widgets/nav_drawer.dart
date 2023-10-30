@@ -32,8 +32,8 @@ class NavDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               onTap: () {
-                Navigator.of(context)
-                    .pop(MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pop(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
                 //.pop to not refresh the page, to stay on the most recent tinder card
               },
             ),

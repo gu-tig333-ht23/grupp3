@@ -118,12 +118,10 @@ class RecipeTile extends StatelessWidget {
                   Consumer<RecipeProvider>(
                     builder: (context, value, child) => ElevatedButton(
                       onPressed: () async {
-                        //to set the recipe id correctly in provider
-                        context.read<RecipeProvider>().chooseRecipeID(recipe);
                         //fetch ingredients from api
                         await context
                             .read<RecipeProvider>()
-                            .fetchIngredientsFromApi();
+                            .fetchIngredientsFromApi(recipe);
                         //view recipe page
                         await Navigator.push(
                           context,

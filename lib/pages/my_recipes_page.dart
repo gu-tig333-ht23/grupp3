@@ -48,14 +48,16 @@ class ViewMyRecipes extends StatelessWidget {
           return NoSavedRecipes();
         }
         //WHEN THERE ARE RECIPES TO SHOW
-        return ListView.builder(
-          itemCount: value.myRecipeList.length,
-          itemBuilder: (context, index) {
-            return RecipeTile(
-              recipe: value.myRecipeList[index],
-            );
-          },
-        );
+        else {
+          return ListView.builder(
+            itemCount: value.myRecipeList.length,
+            itemBuilder: (context, index) {
+              return RecipeTile(
+                recipe: value.myRecipeList[index],
+              );
+            },
+          );
+        }
       },
     );
   }

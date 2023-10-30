@@ -52,10 +52,10 @@ class RecipeChosenMP extends StatelessWidget {
           ),
           //NAVIGATE TO VIEWRECIPE PAGE WHEN IMAGE/TITLE IS CLICKED
           onTap: () async {
-            //to set the recipe id correctly in provider
-            context.read<RecipeProvider>().chooseRecipeID(recipe);
             // //fetch ingredients from api
-            await context.read<RecipeProvider>().fetchIngredientsFromApi();
+            await context
+                .read<RecipeProvider>()
+                .fetchIngredientsFromApi(recipe);
             //go to view recipe page
             // ignore: use_build_context_synchronously
             await Navigator.push(
